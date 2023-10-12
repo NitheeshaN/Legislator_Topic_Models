@@ -1,0 +1,804 @@
+
+R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # STATE ID METADATA ANALYSIS 
+> library(stm)
+stm v1.3.6 successfully loaded. See ?stm for help. 
+ Papers, resources, and other materials at structuraltopicmodel.com
+> library(readr)
+> library(SnowballC)
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> library(textutils)
+> library(quanteda)
+Package version: 3.2.0
+Unicode version: 13.0
+ICU version: 69.1
+Parallel computing: 1 of 1 threads used.
+See https://quanteda.io for tutorials and examples.
+> 
+> ####### LEGIS 60 Topic Model
+> #load objects
+> dfm_sm_leg_stm <- readRDS("dfm_sm_leg_stm.rds")
+> 
+> system.time(              
++   stm_sm_legis <- stm(documents = dfm_sm_leg_stm$documents,
++                       vocab = dfm_sm_leg_stm$vocab,
++                       K=60,
++                       prevalence =~ state_id,
++                       max.em.its = 1000,
++                       gamma.prior='L1',
++                       data=dfm_sm_leg_stm$meta,
++                       init.type="Spectral",
++                       seed = 178)
++ )
+Beginning Spectral Initialization 
+	 Calculating the gram matrix...
+	 Using only 10000 most frequent terms during initialization...
+	 Finding anchor words...
+ 	............................................................
+	 Recovering initialization...
+ 	....................................................................................................
+Initialization complete.
+.....................................................................................................
+Completed E-Step (149 seconds). 
+Completed M-Step (6 seconds). 
+Completing Iteration 1 (approx. per word bound = -7.799) 
+.....................................................................................................
+Completed E-Step (132 seconds). 
+Completed M-Step (2 seconds). 
+Completing Iteration 2 (approx. per word bound = -7.613, relative change = 2.385e-02) 
+.....................................................................................................
+Completed E-Step (116 seconds). 
+Completed M-Step (2 seconds). 
+Completing Iteration 3 (approx. per word bound = -7.545, relative change = 8.972e-03) 
+.....................................................................................................
+Completed E-Step (111 seconds). 
+Completed M-Step (2 seconds). 
+Completing Iteration 4 (approx. per word bound = -7.516, relative change = 3.788e-03) 
+.....................................................................................................
+Completed E-Step (109 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 5 (approx. per word bound = -7.500, relative change = 2.094e-03) 
+Topic 1: please, campaign, follow, twitter, contributing 
+ Topic 2: vote, missed, election, voting, candidate 
+ Topic 3: ", rt, rep, !, house 
+ Topic 4: rt, #mapoli, !, ", today 
+ Topic 5: !, florida, thank, @govrondesantis, fl 
+ Topic 6: rt, ", #moleg, !, missouri 
+ Topic 7: ", rt, !, women, today 
+ Topic 8: ", rt, !, wisconsin, state 
+ Topic 9: !, rt, ", michigan, state 
+ Topic 10: ", #mnleg, rt, !, minnesota 
+ Topic 11: pa, rt, today, !, pennsylvania 
+ Topic 12: rt, !, ", kentucky, great 
+ Topic 13: ", rt, trump, !, president 
+ Topic 14: ", !, rt, new, #nmleg 
+ Topic 15: !, great, rt, today, state 
+ Topic 16: !, ", ?, black, people 
+ Topic 17: rt, ", !, county, today 
+ Topic 18: ", #waleg, !, via, rt 
+ Topic 19: rt, ", !, climate, energy 
+ Topic 20: ", rt, !, game, ? 
+ Topic 21: rt, ", #ksleg, kansas, ! 
+ Topic 22: ", !, via, rt, mississippi 
+ Topic 23: rt, ", arizona, !, az 
+ Topic 24: !, ", rt, great, virginia 
+ Topic 25: ", rt, !, ?, people 
+ Topic 26: !, rt, ", #mnleg, thank 
+ Topic 27: !, rt, ", maryland, baltimore 
+ Topic 28: ", rt, !, #nvleg, nevada 
+ Topic 29: ", !, great, today, county 
+ Topic 30: #utpol, !, ", rt, #utleg 
+ Topic 31: ", rt, ?, !, people 
+ Topic 32: !, rt, ", ?, great 
+ Topic 33: ", rt, ?, !, just 
+ Topic 34: rt, ", !, #covid19, covid-19 
+ Topic 35: !, ", rt, room, ? 
+ Topic 36: !, rt, great, today, " 
+ Topic 37: rt, ", !, today, #sayfie 
+ Topic 38: rt, #ncpol, #ncga, ", nc 
+ Topic 39: rt, ", !, ct, state 
+ Topic 40: #txlege, rt, ", texas, ! 
+ Topic 41: !, ", rt, standing, thank 
+ Topic 42: ", rt, !, nj, new 
+ Topic 43: rt, via, ", !, ? 
+ Topic 44: ", rt, !, illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, great 
+ Topic 46: %, ", cases, tests, new 
+ Topic 47: rt, ", #coleg, !, #copolitics 
+ Topic 48: rt, #nhpolitics, ", !, nh 
+ Topic 49: ", rt, !, people, health 
+ Topic 50: ", !, rt, ?, people 
+ Topic 51: rt, ", !, today, state 
+ Topic 52: ", !, rt, #orpol, #orleg 
+ Topic 53: rt, ", today, ?, ! 
+ Topic 54: rt, ", !, indiana, state 
+ Topic 55: ", rt, !, virginia, consider 
+ Topic 56: !, thank, great, today, rt 
+ Topic 57: rt, ", !, new, thank 
+ Topic 58: rt, ", !, arkansas, #arleg 
+ Topic 59: ", rt, !, #gapol, georgia 
+ Topic 60: ", rt, !, sc, south 
+.....................................................................................................
+Completed E-Step (103 seconds). 
+Completed M-Step (2 seconds). 
+Completing Iteration 6 (approx. per word bound = -7.490, relative change = 1.359e-03) 
+.....................................................................................................
+Completed E-Step (100 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 7 (approx. per word bound = -7.483, relative change = 9.910e-04) 
+.....................................................................................................
+Completed E-Step (102 seconds). 
+Completed M-Step (2 seconds). 
+Completing Iteration 8 (approx. per word bound = -7.477, relative change = 7.234e-04) 
+.....................................................................................................
+Completed E-Step (98 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 9 (approx. per word bound = -7.473, relative change = 5.313e-04) 
+.....................................................................................................
+Completed E-Step (97 seconds). 
+Completed M-Step (2 seconds). 
+Completing Iteration 10 (approx. per word bound = -7.470, relative change = 4.065e-04) 
+Topic 1: please, campaign, follow, twitter, contributing 
+ Topic 2: vote, election, voting, early, ballot 
+ Topic 3: iowa, ", rt, !, #ialegis 
+ Topic 4: rt, #mapoli, !, ", thank 
+ Topic 5: !, florida, thank, @govrondesantis, fl 
+ Topic 6: rt, #moleg, ", missouri, ! 
+ Topic 7: rt, ", !, women, health 
+ Topic 8: ", rt, wisconsin, !, state 
+ Topic 9: !, rt, michigan, ", state 
+ Topic 10: #mnleg, rt, ", !, minnesota 
+ Topic 11: pa, rt, today, pennsylvania, ! 
+ Topic 12: rt, !, ", kentucky, ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: ", #nmleg, new, #nmpol, rt 
+ Topic 15: !, rt, tennessee, great, state 
+ Topic 16: !, ", ?, black, people 
+ Topic 17: rt, !, ", county, today 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", !, energy, climate 
+ Topic 20: rt, ", game, ?, ! 
+ Topic 21: #ksleg, rt, ", kansas, ! 
+ Topic 22: ", !, rt, mississippi, via 
+ Topic 23: rt, ", arizona, !, az 
+ Topic 24: !, ", rt, virginia, great 
+ Topic 25: ", ?, state, !, people 
+ Topic 26: rt, !, ", #mnleg, minnesota 
+ Topic 27: rt, !, ", maryland, md 
+ Topic 28: rt, !, ", #nvleg, nevada 
+ Topic 29: ", great, !, today, day 
+ Topic 30: #utpol, ", rt, !, #utleg 
+ Topic 31: ", rt, ?, !, $ 
+ Topic 32: !, rt, ?, great, " 
+ Topic 33: ", ?, rt, !, just 
+ Topic 34: rt, ", covid-19, #covid19, ! 
+ Topic 35: !, ", …, @, ? 
+ Topic 36: !, great, today, rt, day 
+ Topic 37: rt, ", !, florida, #sayfie 
+ Topic 38: #ncpol, rt, #ncga, ", nc 
+ Topic 39: rt, ", !, #mepolitics, ct 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, ", rt, thank, great 
+ Topic 42: ", rt, !, nj, new 
+ Topic 43: rt, via, ", |, new 
+ Topic 44: rt, ", !, illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, great 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, ", #copolitics, ! 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: ", rt, !, housing, people 
+ Topic 50: ", !, ?, can, people 
+ Topic 51: rt, !, ", california, today 
+ Topic 52: ", #orpol, #orleg, oregon, ! 
+ Topic 53: rt, ", today, day, one 
+ Topic 54: rt, ", indiana, !, #3totweet 
+ Topic 55: ", rt, !, virginia, today 
+ Topic 56: !, thank, great, today, support 
+ Topic 57: rt, !, ", new, thank 
+ Topic 58: rt, ", arkansas, #arleg, #arpx 
+ Topic 59: rt, ", #gapol, georgia, ! 
+ Topic 60: ", rt, sc, !, south 
+.....................................................................................................
+Completed E-Step (96 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 11 (approx. per word bound = -7.468, relative change = 3.104e-04) 
+.....................................................................................................
+Completed E-Step (96 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 12 (approx. per word bound = -7.466, relative change = 2.421e-04) 
+.....................................................................................................
+Completed E-Step (96 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 13 (approx. per word bound = -7.465, relative change = 2.137e-04) 
+.....................................................................................................
+Completed E-Step (95 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 14 (approx. per word bound = -7.463, relative change = 1.903e-04) 
+.....................................................................................................
+Completed E-Step (96 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 15 (approx. per word bound = -7.462, relative change = 1.595e-04) 
+Topic 1: please, campaign, follow, twitter, email 
+ Topic 2: vote, election, voting, ballot, early 
+ Topic 3: iowa, ", rt, #ialegis, ! 
+ Topic 4: #mapoli, rt, !, ", thank 
+ Topic 5: !, de, florida, thank, en 
+ Topic 6: rt, #moleg, ", missouri, ! 
+ Topic 7: rt, ", !, women, health 
+ Topic 8: ", rt, wisconsin, !, state 
+ Topic 9: !, rt, michigan, ", state 
+ Topic 10: #mnleg, rt, ", !, minnesota 
+ Topic 11: pa, rt, today, pennsylvania, ! 
+ Topic 12: rt, !, ", kentucky, ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: #nmleg, #nmpol, new, ", rt 
+ Topic 15: tennessee, rt, !, tn, job 
+ Topic 16: !, ", black, ?, people 
+ Topic 17: !, rt, ", today, day 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", energy, !, climate 
+ Topic 20: rt, ", game, ?, ! 
+ Topic 21: #ksleg, rt, ", kansas, ! 
+ Topic 22: ", rt, !, mississippi, #msleg 
+ Topic 23: rt, ", arizona, az, ! 
+ Topic 24: !, ", rt, virginia, great 
+ Topic 25: ", state, ?, bill, people 
+ Topic 26: rt, !, #mnleg, ", minnesota 
+ Topic 27: rt, !, ", maryland, md 
+ Topic 28: rt, !, ", #nvleg, nevada 
+ Topic 29: ", great, !, today, county 
+ Topic 30: #utpol, ", rt, #utleg, utah 
+ Topic 31: ", rt, ?, !, $ 
+ Topic 32: !, rt, ?, great, thank 
+ Topic 33: ", ?, rt, just, like 
+ Topic 34: rt, ", covid-19, #covid19, health 
+ Topic 35: !, ", …, @, ? 
+ Topic 36: !, great, today, rt, day 
+ Topic 37: rt, !, florida, ", #sayfie 
+ Topic 38: #ncpol, #ncga, rt, nc, " 
+ Topic 39: rt, #mepolitics, ", ct, ! 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, rt, ", thank, great 
+ Topic 42: rt, ", nj, !, new 
+ Topic 43: rt, via, ", |, new 
+ Topic 44: rt, !, ", illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, president 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, #copolitics, ", ! 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: ", rt, !, housing, people 
+ Topic 50: ", !, can, ?, people 
+ Topic 51: rt, !, california, today, ca 
+ Topic 52: #orpol, #orleg, oregon, ", ! 
+ Topic 53: rt, ", day, today, one 
+ Topic 54: rt, indiana, ", #3totweet, state 
+ Topic 55: rt, ", !, virginia, today 
+ Topic 56: !, thank, great, today, support 
+ Topic 57: rt, !, ", new, york 
+ Topic 58: rt, ", arkansas, #arleg, #arpx 
+ Topic 59: #gapol, rt, georgia, ", ! 
+ Topic 60: ", sc, rt, !, south 
+.....................................................................................................
+Completed E-Step (96 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 16 (approx. per word bound = -7.461, relative change = 1.326e-04) 
+.....................................................................................................
+Completed E-Step (96 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 17 (approx. per word bound = -7.460, relative change = 1.086e-04) 
+.....................................................................................................
+Completed E-Step (94 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 18 (approx. per word bound = -7.460, relative change = 8.772e-05) 
+.....................................................................................................
+Completed E-Step (95 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 19 (approx. per word bound = -7.459, relative change = 7.494e-05) 
+.....................................................................................................
+Completed E-Step (95 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 20 (approx. per word bound = -7.459, relative change = 6.635e-05) 
+Topic 1: please, campaign, follow, twitter, email 
+ Topic 2: vote, election, voting, ballot, early 
+ Topic 3: iowa, ", rt, #ialegis, #vtpoli 
+ Topic 4: #mapoli, rt, !, ", thank 
+ Topic 5: !, de, la, en, el 
+ Topic 6: rt, #moleg, missouri, ", ! 
+ Topic 7: rt, ", !, women, health 
+ Topic 8: rt, ", wisconsin, !, state 
+ Topic 9: !, michigan, rt, ", state 
+ Topic 10: #mnleg, rt, ", !, minnesota 
+ Topic 11: pa, rt, today, pennsylvania, @governortomwolf 
+ Topic 12: rt, !, ", kentucky, ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: #nmleg, #nmpol, new, rt, " 
+ Topic 15: tennessee, rt, tn, alabama, job 
+ Topic 16: !, ", black, people, ? 
+ Topic 17: !, rt, ", today, please 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", energy, climate, ! 
+ Topic 20: rt, ", game, ?, great 
+ Topic 21: #ksleg, rt, kansas, ", ! 
+ Topic 22: rt, !, ", mississippi, #msleg 
+ Topic 23: rt, ", arizona, az, ! 
+ Topic 24: !, ", rt, virginia, great 
+ Topic 25: ", state, bill, ?, tax 
+ Topic 26: rt, !, #mnleg, ", minnesota 
+ Topic 27: rt, !, maryland, ", md 
+ Topic 28: rt, !, #nvleg, ", nevada 
+ Topic 29: ", great, !, today, county 
+ Topic 30: #utpol, ", #utleg, rt, utah 
+ Topic 31: ", rt, ?, !, $ 
+ Topic 32: !, rt, great, thank, ? 
+ Topic 33: ", ?, just, like, one 
+ Topic 34: rt, ", covid-19, #covid19, health 
+ Topic 35: !, ", …, @, ? 
+ Topic 36: !, great, today, day, rt 
+ Topic 37: rt, florida, !, ", #sayfie 
+ Topic 38: #ncpol, #ncga, rt, nc, " 
+ Topic 39: rt, #mepolitics, ct, ", state 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, rt, ", thank, us 
+ Topic 42: rt, ", nj, new, bill 
+ Topic 43: rt, via, ", |, new 
+ Topic 44: rt, !, ", illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, president 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, #copolitics, ", ! 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: ", rt, !, housing, people 
+ Topic 50: ", !, can, ?, people 
+ Topic 51: rt, !, california, ca, today 
+ Topic 52: #orpol, #orleg, oregon, ", rt 
+ Topic 53: rt, ", day, today, one 
+ Topic 54: indiana, rt, ", #3totweet, state 
+ Topic 55: rt, ", !, virginia, today 
+ Topic 56: !, thank, great, today, support 
+ Topic 57: rt, new, !, ", york 
+ Topic 58: rt, ", arkansas, #arleg, #arpx 
+ Topic 59: #gapol, georgia, rt, ", ! 
+ Topic 60: ", sc, rt, !, south 
+.....................................................................................................
+Completed E-Step (94 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 21 (approx. per word bound = -7.458, relative change = 5.550e-05) 
+.....................................................................................................
+Completed E-Step (94 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 22 (approx. per word bound = -7.458, relative change = 5.167e-05) 
+.....................................................................................................
+Completed E-Step (93 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 23 (approx. per word bound = -7.457, relative change = 4.408e-05) 
+.....................................................................................................
+Completed E-Step (93 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 24 (approx. per word bound = -7.457, relative change = 3.943e-05) 
+.....................................................................................................
+Completed E-Step (92 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 25 (approx. per word bound = -7.457, relative change = 3.814e-05) 
+Topic 1: please, campaign, follow, twitter, email 
+ Topic 2: vote, election, voting, ballot, early 
+ Topic 3: iowa, ", rt, #ialegis, #vtpoli 
+ Topic 4: #mapoli, rt, !, ", thank 
+ Topic 5: !, de, la, en, el 
+ Topic 6: rt, #moleg, missouri, ", ! 
+ Topic 7: rt, ", !, women, health 
+ Topic 8: rt, wisconsin, ", !, state 
+ Topic 9: michigan, rt, !, ", state 
+ Topic 10: #mnleg, rt, ", !, minnesota 
+ Topic 11: pa, rt, today, pennsylvania, @governortomwolf 
+ Topic 12: rt, !, kentucky, ", ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: #nmleg, #nmpol, new, rt, mexico 
+ Topic 15: rt, tennessee, tn, alabama, job 
+ Topic 16: !, ", black, people, ? 
+ Topic 17: !, rt, ", today, please 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", energy, climate, $ 
+ Topic 20: rt, ", game, ?, great 
+ Topic 21: #ksleg, rt, kansas, ", ! 
+ Topic 22: rt, !, ", mississippi, #msleg 
+ Topic 23: rt, ", arizona, az, ! 
+ Topic 24: !, ", virginia, rt, va 
+ Topic 25: ", state, bill, tax, ? 
+ Topic 26: rt, !, #mnleg, ", minnesota 
+ Topic 27: rt, !, maryland, ", md 
+ Topic 28: rt, !, #nvleg, nevada, " 
+ Topic 29: great, ", !, today, county 
+ Topic 30: #utpol, ", #utleg, utah, rt 
+ Topic 31: ", rt, ?, says, ! 
+ Topic 32: !, rt, thank, great, ? 
+ Topic 33: ", ?, just, like, one 
+ Topic 34: rt, ", covid-19, #covid19, health 
+ Topic 35: !, ", …, @, day 
+ Topic 36: !, great, today, day, community 
+ Topic 37: rt, florida, !, ", #sayfie 
+ Topic 38: #ncpol, #ncga, rt, nc, " 
+ Topic 39: #mepolitics, ct, rt, state, " 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, rt, ", thank, us 
+ Topic 42: rt, ", nj, new, bill 
+ Topic 43: rt, via, ", |, new 
+ Topic 44: rt, !, ", illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, president 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, #copolitics, ", ! 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: ", rt, !, housing, people 
+ Topic 50: ", !, can, ?, school 
+ Topic 51: rt, !, california, ca, today 
+ Topic 52: #orpol, #orleg, oregon, ", rt 
+ Topic 53: rt, ", day, today, one 
+ Topic 54: indiana, rt, #3totweet, state, " 
+ Topic 55: rt, !, ", virginia, today 
+ Topic 56: !, thank, great, today, work 
+ Topic 57: rt, new, !, ", york 
+ Topic 58: rt, ", arkansas, #arleg, #arpx 
+ Topic 59: #gapol, georgia, rt, ", ! 
+ Topic 60: ", sc, rt, !, south 
+.....................................................................................................
+Completed E-Step (93 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 26 (approx. per word bound = -7.457, relative change = 3.258e-05) 
+.....................................................................................................
+Completed E-Step (91 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 27 (approx. per word bound = -7.456, relative change = 3.456e-05) 
+.....................................................................................................
+Completed E-Step (91 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 28 (approx. per word bound = -7.456, relative change = 3.206e-05) 
+.....................................................................................................
+Completed E-Step (91 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 29 (approx. per word bound = -7.456, relative change = 2.530e-05) 
+.....................................................................................................
+Completed E-Step (91 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 30 (approx. per word bound = -7.456, relative change = 2.753e-05) 
+Topic 1: please, campaign, follow, email, twitter 
+ Topic 2: vote, election, voting, ballot, early 
+ Topic 3: iowa, ", rt, #ialegis, #vtpoli 
+ Topic 4: #mapoli, rt, !, ", thank 
+ Topic 5: !, de, la, en, el 
+ Topic 6: rt, #moleg, missouri, ", ! 
+ Topic 7: rt, ", !, women, health 
+ Topic 8: rt, wisconsin, ", state, wi 
+ Topic 9: michigan, rt, !, ", state 
+ Topic 10: #mnleg, rt, ", !, mn 
+ Topic 11: pa, rt, pennsylvania, today, @governortomwolf 
+ Topic 12: rt, !, kentucky, ", ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: #nmleg, #nmpol, new, rt, mexico 
+ Topic 15: rt, tennessee, tn, alabama, job 
+ Topic 16: !, ", black, people, ? 
+ Topic 17: !, today, rt, please, " 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", energy, climate, $ 
+ Topic 20: rt, ", game, ?, great 
+ Topic 21: #ksleg, rt, kansas, ", ! 
+ Topic 22: rt, !, mississippi, ", #msleg 
+ Topic 23: rt, ", arizona, az, ! 
+ Topic 24: !, ", virginia, rt, va 
+ Topic 25: ", state, bill, tax, $ 
+ Topic 26: rt, #mnleg, !, ", minnesota 
+ Topic 27: rt, !, maryland, ", md 
+ Topic 28: rt, !, #nvleg, nevada, " 
+ Topic 29: great, !, today, county, " 
+ Topic 30: #utpol, #utleg, ", utah, #mtpol 
+ Topic 31: ", rt, ?, says, ! 
+ Topic 32: !, rt, thank, great, ? 
+ Topic 33: ", ?, just, like, one 
+ Topic 34: rt, ", covid-19, #covid19, health 
+ Topic 35: !, ", …, @, day 
+ Topic 36: !, great, today, day, community 
+ Topic 37: rt, florida, !, ", #sayfie 
+ Topic 38: #ncpol, #ncga, rt, nc, " 
+ Topic 39: #mepolitics, ct, rt, state, connecticut 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, rt, ", thank, us 
+ Topic 42: rt, ", nj, new, bill 
+ Topic 43: rt, via, ", |, ? 
+ Topic 44: rt, !, ", illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, president 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, #copolitics, ", colorado 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: ", rt, !, housing, ca 
+ Topic 50: ", school, !, can, education 
+ Topic 51: rt, !, california, ca, today 
+ Topic 52: #orpol, #orleg, oregon, rt, " 
+ Topic 53: rt, ", day, today, us 
+ Topic 54: indiana, rt, #3totweet, state, #netde 
+ Topic 55: rt, !, ", virginia, va 
+ Topic 56: !, thank, great, today, work 
+ Topic 57: rt, new, !, ", york 
+ Topic 58: rt, arkansas, ", #arleg, #arpx 
+ Topic 59: #gapol, georgia, rt, ", ! 
+ Topic 60: ", sc, rt, !, south 
+.....................................................................................................
+Completed E-Step (96 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 31 (approx. per word bound = -7.456, relative change = 1.996e-05) 
+.....................................................................................................
+Completed E-Step (90 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 32 (approx. per word bound = -7.455, relative change = 2.336e-05) 
+.....................................................................................................
+Completed E-Step (90 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 33 (approx. per word bound = -7.455, relative change = 1.896e-05) 
+.....................................................................................................
+Completed E-Step (88 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 34 (approx. per word bound = -7.455, relative change = 1.777e-05) 
+.....................................................................................................
+Completed E-Step (87 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 35 (approx. per word bound = -7.455, relative change = 1.493e-05) 
+Topic 1: please, campaign, follow, email, re-election 
+ Topic 2: vote, election, voting, ballot, early 
+ Topic 3: iowa, ", rt, #ialegis, #vtpoli 
+ Topic 4: #mapoli, rt, !, ", thank 
+ Topic 5: !, de, la, el, en 
+ Topic 6: rt, #moleg, missouri, !, " 
+ Topic 7: rt, ", women, !, health 
+ Topic 8: rt, wisconsin, ", wi, state 
+ Topic 9: michigan, rt, !, ", state 
+ Topic 10: #mnleg, rt, ", !, mn 
+ Topic 11: pa, rt, pennsylvania, today, @governortomwolf 
+ Topic 12: rt, !, kentucky, ", ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: #nmleg, #nmpol, new, rt, mexico 
+ Topic 15: rt, tennessee, tn, alabama, job 
+ Topic 16: !, ", black, people, 😂 
+ Topic 17: !, today, please, day, rt 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", energy, climate, $ 
+ Topic 20: rt, ", game, ?, great 
+ Topic 21: #ksleg, rt, kansas, ", ! 
+ Topic 22: rt, !, mississippi, ", #msleg 
+ Topic 23: rt, ", arizona, az, ! 
+ Topic 24: virginia, !, ", rt, va 
+ Topic 25: ", state, bill, $, tax 
+ Topic 26: rt, #mnleg, !, ", minnesota 
+ Topic 27: rt, !, maryland, ", md 
+ Topic 28: rt, !, #nvleg, nevada, " 
+ Topic 29: great, !, today, county, day 
+ Topic 30: #utpol, #utleg, ", utah, #mtpol 
+ Topic 31: ", rt, ?, says, ! 
+ Topic 32: !, rt, thank, great, ? 
+ Topic 33: ", ?, just, like, one 
+ Topic 34: rt, ", covid-19, #covid19, health 
+ Topic 35: !, ", …, @, day 
+ Topic 36: great, !, today, day, state 
+ Topic 37: rt, florida, !, ", thank 
+ Topic 38: #ncpol, #ncga, rt, nc, north 
+ Topic 39: #mepolitics, ct, rt, state, connecticut 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, rt, ", us, thank 
+ Topic 42: rt, ", nj, new, bill 
+ Topic 43: rt, via, ", |, ? 
+ Topic 44: rt, !, ", illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, president 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, #copolitics, ", colorado 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: ", rt, !, housing, ca 
+ Topic 50: ", school, education, students, ! 
+ Topic 51: rt, !, california, ca, today 
+ Topic 52: #orpol, #orleg, oregon, rt, " 
+ Topic 53: rt, ", day, today, us 
+ Topic 54: indiana, rt, #3totweet, state, #netde 
+ Topic 55: rt, !, ", virginia, va 
+ Topic 56: !, thank, great, today, work 
+ Topic 57: rt, new, !, ", york 
+ Topic 58: rt, arkansas, ", #arleg, #arpx 
+ Topic 59: #gapol, georgia, rt, ", ! 
+ Topic 60: ", sc, rt, !, south 
+.....................................................................................................
+Completed E-Step (88 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 36 (approx. per word bound = -7.455, relative change = 1.622e-05) 
+.....................................................................................................
+Completed E-Step (88 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 37 (approx. per word bound = -7.455, relative change = 1.559e-05) 
+.....................................................................................................
+Completed E-Step (87 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 38 (approx. per word bound = -7.455, relative change = 1.316e-05) 
+.....................................................................................................
+Completed E-Step (86 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 39 (approx. per word bound = -7.455, relative change = 1.321e-05) 
+.....................................................................................................
+Completed E-Step (85 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 40 (approx. per word bound = -7.455, relative change = 1.244e-05) 
+Topic 1: please, campaign, follow, re-election, email 
+ Topic 2: vote, election, voting, ballot, early 
+ Topic 3: iowa, rt, ", #ialegis, #vtpoli 
+ Topic 4: #mapoli, rt, !, ", thank 
+ Topic 5: !, de, la, el, en 
+ Topic 6: rt, #moleg, missouri, !, " 
+ Topic 7: rt, ", women, !, health 
+ Topic 8: rt, wisconsin, ", wi, state 
+ Topic 9: michigan, rt, !, ", state 
+ Topic 10: #mnleg, rt, ", !, mn 
+ Topic 11: pa, rt, pennsylvania, today, @governortomwolf 
+ Topic 12: rt, !, kentucky, ", ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: #nmleg, #nmpol, new, rt, mexico 
+ Topic 15: tennessee, rt, tn, alabama, job 
+ Topic 16: !, ", black, people, 😂 
+ Topic 17: !, today, please, day, community 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", energy, climate, $ 
+ Topic 20: rt, ", game, great, ? 
+ Topic 21: #ksleg, rt, kansas, ", ! 
+ Topic 22: rt, !, mississippi, #msleg, " 
+ Topic 23: rt, ", arizona, az, ! 
+ Topic 24: virginia, !, ", rt, va 
+ Topic 25: ", state, bill, $, tax 
+ Topic 26: rt, #mnleg, !, ", minnesota 
+ Topic 27: rt, !, maryland, ", md 
+ Topic 28: rt, !, #nvleg, nevada, thank 
+ Topic 29: great, !, today, county, day 
+ Topic 30: #utpol, #utleg, utah, ", #mtpol 
+ Topic 31: ", rt, ?, says, ! 
+ Topic 32: !, rt, thank, great, ? 
+ Topic 33: ", ?, just, like, one 
+ Topic 34: rt, ", covid-19, #covid19, health 
+ Topic 35: !, ", …, @, day 
+ Topic 36: great, !, today, day, state 
+ Topic 37: rt, florida, !, ", thank 
+ Topic 38: #ncpol, #ncga, rt, nc, north 
+ Topic 39: #mepolitics, ct, rt, state, connecticut 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, rt, ", us, thank 
+ Topic 42: rt, nj, ", new, bill 
+ Topic 43: rt, via, ", ?, | 
+ Topic 44: rt, !, ", illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, ? 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, #copolitics, colorado, " 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: ", rt, !, housing, ca 
+ Topic 50: school, ", students, education, schools 
+ Topic 51: rt, !, california, ca, thank 
+ Topic 52: #orpol, #orleg, oregon, rt, " 
+ Topic 53: rt, ", day, today, us 
+ Topic 54: indiana, #3totweet, rt, state, #netde 
+ Topic 55: rt, !, ", virginia, va 
+ Topic 56: !, thank, great, today, work 
+ Topic 57: rt, new, !, ", york 
+ Topic 58: rt, arkansas, ", #arleg, #arpx 
+ Topic 59: #gapol, georgia, rt, ", ! 
+ Topic 60: ", sc, rt, !, south 
+.....................................................................................................
+Completed E-Step (85 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 41 (approx. per word bound = -7.454, relative change = 1.176e-05) 
+.....................................................................................................
+Completed E-Step (87 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 42 (approx. per word bound = -7.454, relative change = 1.262e-05) 
+.....................................................................................................
+Completed E-Step (86 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 43 (approx. per word bound = -7.454, relative change = 1.095e-05) 
+.....................................................................................................
+Completed E-Step (84 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 44 (approx. per word bound = -7.454, relative change = 1.010e-05) 
+.....................................................................................................
+Completed E-Step (84 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 45 (approx. per word bound = -7.454, relative change = 1.046e-05) 
+Topic 1: please, campaign, follow, re-election, email 
+ Topic 2: vote, election, voting, ballot, early 
+ Topic 3: iowa, rt, ", #ialegis, #vtpoli 
+ Topic 4: #mapoli, rt, !, ", ma 
+ Topic 5: de, !, la, el, en 
+ Topic 6: rt, #moleg, missouri, !, " 
+ Topic 7: rt, ", women, health, ! 
+ Topic 8: rt, wisconsin, ", wi, state 
+ Topic 9: michigan, rt, !, ", state 
+ Topic 10: #mnleg, rt, !, ", mn 
+ Topic 11: pa, rt, pennsylvania, today, @governortomwolf 
+ Topic 12: rt, !, kentucky, ", ky 
+ Topic 13: rt, ", trump, president, ? 
+ Topic 14: #nmleg, #nmpol, new, rt, mexico 
+ Topic 15: tennessee, rt, tn, alabama, job 
+ Topic 16: !, ", black, people, 😂 
+ Topic 17: !, today, please, day, community 
+ Topic 18: ", #waleg, house, state, bill 
+ Topic 19: rt, ", energy, climate, $ 
+ Topic 20: rt, ", game, great, ? 
+ Topic 21: #ksleg, rt, kansas, ", ! 
+ Topic 22: rt, !, mississippi, #msleg, " 
+ Topic 23: rt, ", arizona, az, ! 
+ Topic 24: virginia, !, ", rt, va 
+ Topic 25: ", state, bill, $, tax 
+ Topic 26: rt, #mnleg, !, ", minnesota 
+ Topic 27: rt, !, maryland, ", md 
+ Topic 28: !, rt, #nvleg, nevada, thank 
+ Topic 29: great, !, today, county, day 
+ Topic 30: #utpol, #utleg, utah, #mtpol, " 
+ Topic 31: ", rt, ?, says, ! 
+ Topic 32: !, rt, thank, great, ? 
+ Topic 33: ", ?, just, like, one 
+ Topic 34: rt, ", covid-19, #covid19, health 
+ Topic 35: !, ", …, @, day 
+ Topic 36: great, !, today, day, state 
+ Topic 37: rt, florida, !, thank, #sayfie 
+ Topic 38: #ncpol, #ncga, rt, nc, north 
+ Topic 39: #mepolitics, ct, state, rt, connecticut 
+ Topic 40: #txlege, texas, rt, !, " 
+ Topic 41: !, rt, us, ", thank 
+ Topic 42: rt, nj, new, ", bill 
+ Topic 43: rt, via, ?, ", new 
+ Topic 44: rt, !, ", illinois, #lalege 
+ Topic 45: rt, !, ", @realdonaldtrump, ? 
+ Topic 46: %, cases, tests, new, " 
+ Topic 47: #coleg, rt, #copolitics, colorado, ! 
+ Topic 48: #nhpolitics, rt, ", nh, ! 
+ Topic 49: rt, ", !, housing, ca 
+ Topic 50: school, students, education, ", schools 
+ Topic 51: rt, !, california, ca, thank 
+ Topic 52: #orpol, #orleg, oregon, rt, ! 
+ Topic 53: rt, ", day, today, us 
+ Topic 54: indiana, #3totweet, state, #netde, rt 
+ Topic 55: rt, !, ", virginia, va 
+ Topic 56: !, thank, great, today, work 
+ Topic 57: rt, new, !, ", york 
+ Topic 58: rt, arkansas, ", #arleg, #arpx 
+ Topic 59: #gapol, georgia, rt, ", ! 
+ Topic 60: ", sc, rt, !, south 
+.....................................................................................................
+Completed E-Step (84 seconds). 
+Completed M-Step (3 seconds). 
+Completing Iteration 46 (approx. per word bound = -7.454, relative change = 1.028e-05) 
+.....................................................................................................
+Completed E-Step (83 seconds). 
+Completed M-Step (3 seconds). 
+Model Converged 
+    user   system  elapsed 
+2692.282   60.854 5060.011 
+> 
+> saveRDS(stm_sm_legis,file="stm_legis60_statecov.RDS") #8M
+> 
+> proc.time()
+    user   system  elapsed 
+2697.810   61.202 5099.868 

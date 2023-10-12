@@ -1,0 +1,73 @@
+This file contains the replication materials for the Twitter data analysis found in the main text of the "The study of short texts in digital politics: Document aggregation for topic modeling" paper.
+
+All analysis were done on R version 4.1.1 (2021-08-10)
+
+1) Tweets_Data
+Contains the following anonymized datasets: "milli_twts_sample.rds" and "handle.milli_sample.rds". These datasets do not include any identifiers but only the tweet text.
+    
+2) STM_Models
+Contains the following scripts: 'milli.legis_60stm.R', 'milli.legis_120stm.R', 'milli.twts_60stm.r', 'milli.twts_120stm.r'. 
+Scripts input the "milli.twts_sample.rds" and "handle.milli_sample.rds" found in the "Tweets_Data" folder.
+Scripts output includes the following:
+  - 4 tokens matrix objects: "tokens_leg60.rds", "tokens_leg120.rds", "tokens_twts60.rds", "tokens_twts120.rds"
+  - 4 full document frame matrix objects: "full_dfm_leg60.rds", "full_dfm_leg120.rds", "full_dfm_twts60.rds", "full_dfm_twts120.rds"
+  - 4 trimmed document frame matrix objects: "dfm_sm_leg60.rds", "dfm_sm_leg120.rds", "dfm_sm_twts60.rds", "dfm_sm_twts120.rds"
+  - 4 stm document frame matrix objects: "dfm_sm_leg_stm60.rds", "dfm_sm_leg_stm120.rds", "dfm_sm_twts_stm60.rds", "dfm_sm_twts_stm120.rds"
+  - 4 stm model objects: "stm_sm_leg60.RDS", "stm_sm_leg120.RDS", "stm_sm_twts60.RDS", "stm_sm_twts120.RDS"
+  - 4 word profile text files: "stm_sm_leg60_kw.txt", "stm_sm_leg120_kw.txt", "stm_sm_twts60_kw.txt", "stm_sm_twts120_kw.txt"
+
+Contains "results.R" script.
+Script inputs the stm model objects: "stm_sm_leg60.RDS", "stm_sm_leg120.RDS", "stm_sm_twts60.RDS", "stm_sm_twts120.RDS" (these model objects are rendered from the four "milli.legis..." and "milli.twts..." scripts listed above).
+Script output is "results.rds" which is a list of all four stm model objects in 1 rds file.
+
+3) STM_Model_Plots
+Contatins the following script: "visualize_state_twts_topics.R".
+Script inputs "results.rds".
+Script outputs the following png files: "120_topics_975885_documents.png" (Main Fig. 1), "120_topics_4079_documents.png" (Main Fig. 2), "60_topics_975885_documents.png" (Appendix Fig. 5), "60_topics_4079_documents.png" (Appendix Fig. 6)
+
+4a) State_Related_Topics > Main_Table1
+Contains the following script: "Main_Table1.r" and the following out csv file: "Main_Table1.csv"
+Script inputs the following stm model objects: "stm_sm_leg60.RDS", "stm_sm_leg120.RDS", "stm_sm_twts60.RDS", "stm_sm_twts120.RDS" and "results.rds".
+The script outputs: "Main_Table1.csv"
+
+4b) State_Related_Topics > Appendix_Table2
+Contains the following script: "Appendix_Table2.r" and the following out csv file: "Appendix_Table2.csv"
+Script inputs the following stm model objects: "stm_sm_leg60.RDS", "stm_sm_leg120.RDS", "stm_sm_twts60.RDS", "stm_sm_twts120.RDS" and "results.rds".
+Script outputs: "Appendix_Table2.csv"
+
+5) Skewness
+Contains the following script "skewness.R" and "skewness.csv"
+Script inputs the following: "dfm_sm_leg60.rds" and "dfm_sm_twts60.rds".
+Script outputs the following: "skewness.csv"
+
+6a) Metadata_STM_Models > Tweets
+Contains the following script "Twts_cov.R" and log file "Twts_cov.Rout".
+Script inputs the following: "dfm_sm_twts_stm60.rds" and "milli.twts_sample.rds".
+Script outputes the following: "stm_twts60_statecov.RDS"
+
+6b) Metadata_STM_Models > Legislators
+Contains the following script "Legis_cov.R" and log file "Legis_cov.R"
+Script inputs the following: "dfm_sm_leg_stm60.rds", "milli.twts_sample.rds" and "handle.milli_sample.rds".
+Script ouputs the following: "dfm_sm_leg_stm_cov.rds" and  "stm_legis60_statecov.RDS".
+
+6) Metadata_STM_Models
+Contains the following script "Appendix_Table3" and "Appendix_Table3.csv".
+Script inputs the following: "stm_twts60_statecov.RDS" and "stm_legis60_statecov.RDS".
+Script outputs the following: "Appendix_Table3.csv"
+
+7) Topic_Selection
+Contains the following script "models.R".
+Script inputs "dfm_sm_twts_stm60.rds" and "dfm_sm_leg_stm60.rds".
+Script outputs "stm_sm_twts30.RDS", "stm_sm_twts90.RDS", "stm_sm_twts150.RDS", "stm_sm_leg30.RDS", "stm_sm_leg90.RDS", "stm_sm_leg150.RDS"
+
+7a) Topic_Selection > Appendix_Fig7_8
+Contains the following script "Appx_Fig7_8.R".
+Script inputs the following: "dfm_sm_twts_stm60.rds" and "dfm_sm_leg_stm60.rds" and "stm_sm_twts30.RDS","stm_sm_twts60.RDS", "stm_sm_twts90.RDS", "stm_sm_twts120.RDS", "stm_sm_twts150.RDS", "stm_sm_leg30.RDS", "stm_sm_leg60.RDS", "stm_sm_leg90.RDS", "stm_sm_leg120.RDS", "stm_sm_leg150.RDS"
+Script outputs the following csv files: "tweets.csv" and "legis.csv" as well as the following two plots: "tweets_coherence_vs_exclusivity.pdf", "legis_coherence_vs_exclusivity.pdf"
+
+8) Permutations
+Contains the following two scripts "twts_permutation.R" and "Appendix_Fig11.R".
+Script "twts_permutation.R" inputs "dfm_sm_leg60.rds". Script outputs "permutation_results.rds".
+
+Script "Appendix_Fig11.R" inputs "results.rds","permutation_results.rds". 
+Script outputs "tweets_permutation_results.pdf" and "permutation_analysis_description.txt".

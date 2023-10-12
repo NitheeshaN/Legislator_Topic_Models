@@ -1,0 +1,3296 @@
+
+R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # STATE ID METADATA ANALYSIS 
+> library(stm)
+stm v1.3.6 successfully loaded. See ?stm for help. 
+ Papers, resources, and other materials at structuraltopicmodel.com
+> library(readr)
+> library(SnowballC)
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> library(textutils)
+> library(quanteda)
+Package version: 3.2.0
+Unicode version: 13.0
+ICU version: 69.1
+Parallel computing: 1 of 1 threads used.
+See https://quanteda.io for tutorials and examples.
+> 
+> ####### TWEETS 60 Topic Model
+> #load objects
+> dfm_sm_stm60 <- readRDS("dfm_sm_stm60.rds")
+> 
+> text_twts <- read_csv("milli.twts_sample.csv")
+New names:
+• `` -> `...1`
+Rows: 1000000 Columns: 12
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (7): created_at, full_text, user.screen_name, user.name, retweeted_statu...
+dbl (5): ...1, id_str, user.id_str, favorite_count, retweet_count
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+> 
+> #add state ID covariate to meta data
+> dfm_sm_stm60$meta$state_id <- text_twts$legislator_state[as.numeric(names(dfm_sm_stm60$documents))]
+> 
+> system.time(              
++   stm_sm_twts <- stm(documents = dfm_sm_stm60$documents,
++                      vocab = dfm_sm_stm60$vocab,
++                      K=60,
++                      prevalence =~ state_id,
++                      max.em.its = 1000,
++                      gamma.prior='L1',
++                      data=dfm_sm_stm60$meta,
++                      init.type="Spectral",
++                      seed = 178)
++ )
+Beginning Spectral Initialization 
+	 Calculating the gram matrix...
+	 Using only 10000 most frequent terms during initialization...
+	 Finding anchor words...
+ 	............................................................
+	 Recovering initialization...
+ 	....................................................................................................
+Initialization complete.
+....................................................................................................
+Completed E-Step (1573 seconds). 
+Completed M-Step (170 seconds). 
+Completing Iteration 1 (approx. per word bound = -7.903) 
+....................................................................................................
+Completed E-Step (1456 seconds). 
+Completed M-Step (758 seconds). 
+Completing Iteration 2 (approx. per word bound = -7.771, relative change = 1.672e-02) 
+....................................................................................................
+Completed E-Step (1488 seconds). 
+Completed M-Step (1088 seconds). 
+Completing Iteration 3 (approx. per word bound = -7.702, relative change = 8.942e-03) 
+....................................................................................................
+Completed E-Step (1380 seconds). 
+Completed M-Step (1176 seconds). 
+Completing Iteration 4 (approx. per word bound = -7.655, relative change = 6.116e-03) 
+....................................................................................................
+Completed E-Step (1263 seconds). 
+Completed M-Step (1222 seconds). 
+Completing Iteration 5 (approx. per word bound = -7.620, relative change = 4.571e-03) 
+Topic 1: day, today, rt, national, remember 
+ Topic 2: trump, president, go, white, love 
+ Topic 3: city, rt, open, council, public 
+ Topic 4: message, clear, rt, available, sent 
+ Topic 5: food, rt, healthy, build, table 
+ Topic 6: rt, va, @governorva, absolute, 👏🏻 
+ Topic 7: !, thanks, thank, great, yes 
+ Topic 8: rt, text, mess, stepping, properly 
+ Topic 9: health, care, rt, |, access 
+ Topic 10: job, jobs, economic, fair, rt 
+ Topic 11: voted, rt, #gapol, georgia, ga 
+ Topic 12: …, rt, matters, #texas, hunger 
+ Topic 13: rt, 👏, oklahoma, kudos, nevada 
+ Topic 14: *, rt, like, 😂, @joebiden 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: bill, house, rt, passed, senate 
+ Topic 17: rt, minnesota, #mnleg, #lalege, louisiana 
+ Topic 18: rt, hate, sc, 🤣, prison 
+ Topic 19: new, rt, cases, covid-19, york 
+ Topic 20: rt, small, businesses, help, program 
+ Topic 21: rt, fire, leave, ✅, paid 
+ Topic 22: rt, whole, icymi, stage, debate 
+ Topic 23: rt, game, play, minutes, half 
+ Topic 24: rt, florida, 18, months, 16 
+ Topic 25: de, la, rt, el, o 
+ Topic 26: rt, hands, kid, wear, face 
+ Topic 27: rt, 😍, dogs, 💪, natural 
+ Topic 28: ", rt, said, says, people 
+ Topic 29: read, rt, information, #covid19, call 
+ Topic 30: rt, pa, tennessee, pennsylvania, order 
+ Topic 31: rt, maryland, md, baltimore, pride 
+ Topic 32: rt, discussing, issues, farmers, rural 
+ Topic 33: rt, via, #moleg, campaign, week 
+ Topic 34: world, rt, people, one, society 
+ Topic 35: great, rt, thank, check, ! 
+ Topic 36: rt, elections, however, closing, decisions 
+ Topic 37: ?, rt, know, can, like 
+ Topic 38: must, law, court, climate, pass 
+ Topic 39: !, good, great, see, get 
+ Topic 40: happy, family, !, friends, day 
+ Topic 41: rt, service, families, thank, ❤ 
+ Topic 42: together, stand, rt, working, union 
+ Topic 43: state, rt, rep, senator, senate 
+ Topic 44: committee, today, house, session, hearing 
+ Topic 45: school, students, kids, high, schools 
+ Topic 46: rt, politics, unacceptable, political, code 
+ Topic 47: rt, #coleg, #copolitics, #mapoli, colorado 
+ Topic 48: live, watch, video, facebook, rt 
+ Topic 49: rt, michigan, coronavirus, leaving, light 
+ Topic 50: county, #txlege, texas, rt, water 
+ Topic 51: %, rt, 100, agree, + 
+ Topic 52: !, well, congratulations, rt, done 
+ Topic 53: women, thank, fight, proud, work 
+ Topic 54: please, vote, help, can, rt 
+ Topic 55: $, 2, tax, 1, million 
+ Topic 56: rt, @realdonaldtrump, 🇺🇸, country, veterans 
+ Topic 57: gun, violence, support, safety, rt 
+ Topic 58: #utpol, rt, clean, air, bill 
+ Topic 59: rt, voters, democrats, candidates, north 
+ Topic 60: rt, now, one, today, time 
+....................................................................................................
+Completed E-Step (1163 seconds). 
+Completed M-Step (1235 seconds). 
+Completing Iteration 6 (approx. per word bound = -7.596, relative change = 3.128e-03) 
+....................................................................................................
+Completed E-Step (1061 seconds). 
+Completed M-Step (1219 seconds). 
+Completing Iteration 7 (approx. per word bound = -7.575, relative change = 2.733e-03) 
+....................................................................................................
+Completed E-Step (997 seconds). 
+Completed M-Step (1190 seconds). 
+Completing Iteration 8 (approx. per word bound = -7.557, relative change = 2.352e-03) 
+....................................................................................................
+Completed E-Step (952 seconds). 
+Completed M-Step (1177 seconds). 
+Completing Iteration 9 (approx. per word bound = -7.542, relative change = 1.961e-03) 
+....................................................................................................
+Completed E-Step (926 seconds). 
+Completed M-Step (1139 seconds). 
+Completing Iteration 10 (approx. per word bound = -7.530, relative change = 1.605e-03) 
+Topic 1: day, today, national, years, history 
+ Topic 2: trump, president, go, white, says 
+ Topic 3: city, open, council, social, close 
+ Topic 4: available, clear, rt, message, now 
+ Topic 5: food, rt, build, healthy, market 
+ Topic 6: rt, virginia, power, west, piece 
+ Topic 7: !, thank, thanks, support, yes 
+ Topic 8: rt, comes, dc, challenge, calls 
+ Topic 9: health, care, access, rt, | 
+ Topic 10: job, jobs, economy, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, rt, key, matters, greater 
+ Topic 13: rt, 👏, #nvleg, nevada, oklahoma 
+ Topic 14: like, *, rt, just, makes 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: bill, house, senate, passed, legislation 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, cases, covid-19, rt, report 
+ Topic 20: program, small, businesses, help, pandemic 
+ Topic 21: police, rt, fire, department, leave 
+ Topic 22: plan, rt, debate, plans, whole 
+ Topic 23: two, rt, win, game, left 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, rt, la, son, el 
+ Topic 26: face, rt, behind, mask, wear 
+ Topic 27: rt, natural, plant, 😍, animal 
+ Topic 28: ", rt, said, says, people 
+ Topic 29: call, important, read, home, stay 
+ Topic 30: rt, order, pa, executive, pennsylvania 
+ Topic 31: rt, maryland, md, delegate, lgbtq 
+ Topic 32: issues, rt, rural, industry, discussing 
+ Topic 33: rt, via, campaign, week, show 
+ Topic 34: world, around, rt, human, us 
+ Topic 35: great, community, event, w, meeting 
+ Topic 36: move, weeks, elections, rt, several 
+ Topic 37: ?, know, just, people, can 
+ Topic 38: must, law, change, court, end 
+ Topic 39: good, see, great, back, get 
+ Topic 40: happy, family, friends, everyone, love 
+ Topic 41: service, families, life, thank, leadership 
+ Topic 42: working, together, stand, rt, union 
+ Topic 43: state, rt, rep, senator, governor 
+ Topic 44: session, committee, today, hearing, house 
+ Topic 45: school, students, schools, kids, education 
+ Topic 46: political, rt, politics, heard, racism 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: live, watch, video, facebook, photo 
+ Topic 49: rt, coronavirus, dr, officials, michigan 
+ Topic 50: county, #txlege, texas, rt, park 
+ Topic 51: %, +, since, years, agree 
+ Topic 52: well, congratulations, proud, done, congrats 
+ Topic 53: women, work, proud, fight, future 
+ Topic 54: vote, help, please, can, make 
+ Topic 55: $, 2, tax, 1, budget 
+ Topic 56: country, @realdonaldtrump, american, rt, america 
+ Topic 57: safety, gun, issue, violence, action 
+ Topic 58: water, energy, rt, #utpol, force 
+ Topic 59: rt, voters, party, republican, democrats 
+ Topic 60: rt, now, time, one, us 
+....................................................................................................
+Completed E-Step (909 seconds). 
+Completed M-Step (1159 seconds). 
+Completing Iteration 11 (approx. per word bound = -7.520, relative change = 1.387e-03) 
+....................................................................................................
+Completed E-Step (899 seconds). 
+Completed M-Step (1125 seconds). 
+Completing Iteration 12 (approx. per word bound = -7.511, relative change = 1.151e-03) 
+....................................................................................................
+Completed E-Step (877 seconds). 
+Completed M-Step (1144 seconds). 
+Completing Iteration 13 (approx. per word bound = -7.504, relative change = 9.745e-04) 
+....................................................................................................
+Completed E-Step (863 seconds). 
+Completed M-Step (1166 seconds). 
+Completing Iteration 14 (approx. per word bound = -7.498, relative change = 8.227e-04) 
+....................................................................................................
+Completed E-Step (854 seconds). 
+Completed M-Step (1183 seconds). 
+Completing Iteration 15 (approx. per word bound = -7.492, relative change = 6.867e-04) 
+Topic 1: today, day, first, years, national 
+ Topic 2: trump, president, go, says, white 
+ Topic 3: city, open, social, mayor, council 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, summer, build, works, healthy 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, support, yes 
+ Topic 8: rt, washington, calls, comes, dc 
+ Topic 9: health, care, access, |, healthcare 
+ Topic 10: job, jobs, opportunity, economic, economy 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, rt, key, experience, matters 
+ Topic 13: rt, ohio, ca, 👏, #nvleg 
+ Topic 14: like, *, man, just, makes 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: bill, house, senate, passed, legislation 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, cases, report, covid-19, rt 
+ Topic 20: local, program, help, small, businesses 
+ Topic 21: police, rt, fire, department, leave 
+ Topic 22: plan, policy, rt, debate, plans 
+ Topic 23: two, win, rt, game, left 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, rt, son, el 
+ Topic 26: face, rt, behind, mask, wear 
+ Topic 27: rt, found, dog, gas, natural 
+ Topic 28: ", rt, said, says, [ 
+ Topic 29: home, important, call, read, safe 
+ Topic 30: rt, order, pa, executive, moving 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rt, rural, industry, discussing 
+ Topic 33: rt, via, week, campaign, show 
+ Topic 34: world, around, human, us, place 
+ Topic 35: great, community, w, meeting, event 
+ Topic 36: times, able, past, move, weeks 
+ Topic 37: ?, just, people, know, one 
+ Topic 38: must, law, change, stop, end 
+ Topic 39: good, see, back, get, tonight 
+ Topic 40: happy, love, everyone, family, friends 
+ Topic 41: life, service, leadership, families, thank 
+ Topic 42: working, together, stand, rt, put 
+ Topic 43: state, rep, rt, senator, governor 
+ Topic 44: session, committee, legislative, hearing, 30 
+ Topic 45: school, students, education, schools, children 
+ Topic 46: political, heard, politics, rt, citizens 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: live, watch, full, video, facebook 
+ Topic 49: rt, coronavirus, dr, elected, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, +, since, years, 20 
+ Topic 52: well, congratulations, honored, done, congrats 
+ Topic 53: work, women, proud, support, fight 
+ Topic 54: vote, make, help, can, please 
+ Topic 55: $, 2, 1, tax, budget 
+ Topic 56: country, american, @realdonaldtrump, america, rt 
+ Topic 57: safety, action, gun, issue, violence 
+ Topic 58: water, energy, #utpol, force, rt 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, now, time, one, another 
+....................................................................................................
+Completed E-Step (847 seconds). 
+Completed M-Step (1163 seconds). 
+Completing Iteration 16 (approx. per word bound = -7.488, relative change = 5.708e-04) 
+....................................................................................................
+Completed E-Step (842 seconds). 
+Completed M-Step (1167 seconds). 
+Completing Iteration 17 (approx. per word bound = -7.485, relative change = 4.848e-04) 
+....................................................................................................
+Completed E-Step (842 seconds). 
+Completed M-Step (1207 seconds). 
+Completing Iteration 18 (approx. per word bound = -7.482, relative change = 4.023e-04) 
+....................................................................................................
+Completed E-Step (830 seconds). 
+Completed M-Step (1196 seconds). 
+Completing Iteration 19 (approx. per word bound = -7.479, relative change = 3.872e-04) 
+....................................................................................................
+Completed E-Step (806 seconds). 
+Completed M-Step (1145 seconds). 
+Completing Iteration 20 (approx. per word bound = -7.476, relative change = 3.384e-04) 
+Topic 1: today, day, first, years, national 
+ Topic 2: trump, president, go, says, black 
+ Topic 3: city, open, social, mayor, council 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: washington, rt, calls, comes, color 
+ Topic 9: health, care, access, |, crisis 
+ Topic 10: job, jobs, opportunity, economic, economy 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, rt, experience, key, matters 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, 😂 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: bill, house, senate, passed, legislation 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, cases, report, covid-19, testing 
+ Topic 20: local, program, help, need, small 
+ Topic 21: police, fire, rt, department, leave 
+ Topic 22: plan, policy, rt, debate, plans 
+ Topic 23: two, win, game, left, rt 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, rt 
+ Topic 26: face, behind, mask, rt, wear 
+ Topic 27: rt, found, gas, dog, natural 
+ Topic 28: ", said, rt, says, [ 
+ Topic 29: home, important, call, read, safe 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, via, week, campaign, show 
+ Topic 34: world, place, around, us, means 
+ Topic 35: great, community, w, meeting, event 
+ Topic 36: long, times, many, able, past 
+ Topic 37: ?, just, people, one, know 
+ Topic 38: must, law, stop, change, end 
+ Topic 39: good, see, time, back, tonight 
+ Topic 40: happy, love, everyone, family, friends 
+ Topic 41: life, service, leadership, families, many 
+ Topic 42: working, together, stand, workers, put 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: session, legislative, 6, tomorrow, 30 
+ Topic 45: school, students, public, education, schools 
+ Topic 46: political, heard, politics, citizens, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: live, watch, full, video, check 
+ Topic 49: rt, coronavirus, dr, elected, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, +, since, years, 5 
+ Topic 52: best, district, well, congratulations, honored 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: vote, make, help, can, us 
+ Topic 55: $, 2, 1, tax, budget 
+ Topic 56: country, american, @realdonaldtrump, america, rt 
+ Topic 57: safety, justice, action, gun, issue 
+ Topic 58: water, energy, use, #utpol, force 
+ Topic 59: voters, rt, republican, party, gop 
+ Topic 60: rt, another, also, time, taking 
+....................................................................................................
+Completed E-Step (812 seconds). 
+Completed M-Step (1145 seconds). 
+Completing Iteration 21 (approx. per word bound = -7.474, relative change = 2.837e-04) 
+....................................................................................................
+Completed E-Step (802 seconds). 
+Completed M-Step (1160 seconds). 
+Completing Iteration 22 (approx. per word bound = -7.472, relative change = 2.442e-04) 
+....................................................................................................
+Completed E-Step (797 seconds). 
+Completed M-Step (1125 seconds). 
+Completing Iteration 23 (approx. per word bound = -7.471, relative change = 2.202e-04) 
+....................................................................................................
+Completed E-Step (796 seconds). 
+Completed M-Step (1115 seconds). 
+Completing Iteration 24 (approx. per word bound = -7.469, relative change = 1.977e-04) 
+....................................................................................................
+Completed E-Step (794 seconds). 
+Completed M-Step (1145 seconds). 
+Completing Iteration 25 (approx. per word bound = -7.468, relative change = 1.860e-04) 
+Topic 1: today, day, first, years, made 
+ Topic 2: trump, president, go, black, says 
+ Topic 3: city, open, social, residents, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: washington, calls, rt, comes, phone 
+ Topic 9: health, care, access, crisis, | 
+ Topic 10: job, jobs, opportunity, economic, economy 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, experience, rt, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, 😂 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: bill, house, senate, passed, legislation 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, cases, covid-19, report, testing 
+ Topic 20: local, need, program, help, government 
+ Topic 21: police, fire, rt, department, leave 
+ Topic 22: plan, policy, rt, debate, plans 
+ Topic 23: two, win, game, days, left 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: face, behind, mask, wear, masks 
+ Topic 27: rt, found, gas, dog, natural 
+ Topic 28: ", said, rt, says, [ 
+ Topic 29: home, important, call, read, safe 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, us 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: long, many, times, able, past 
+ Topic 37: ?, just, people, one, know 
+ Topic 38: must, law, stop, change, end 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, everyone, year, family 
+ Topic 41: life, many, service, leadership, families 
+ Topic 42: working, together, workers, stand, put 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: session, legislative, tomorrow, 6, 30 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, heard, politics, citizens, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: live, check, watch, full, video 
+ Topic 49: rt, coronavirus, dr, elected, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, +, since, years, 5 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: vote, make, us, can, help 
+ Topic 55: $, 2, 1, tax, budget 
+ Topic 56: country, american, @realdonaldtrump, america, rt 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, rt, republican, party, gop 
+ Topic 60: rt, another, also, s, time 
+....................................................................................................
+Completed E-Step (800 seconds). 
+Completed M-Step (1163 seconds). 
+Completing Iteration 26 (approx. per word bound = -7.466, relative change = 1.758e-04) 
+....................................................................................................
+Completed E-Step (801 seconds). 
+Completed M-Step (1163 seconds). 
+Completing Iteration 27 (approx. per word bound = -7.465, relative change = 1.613e-04) 
+....................................................................................................
+Completed E-Step (808 seconds). 
+Completed M-Step (1166 seconds). 
+Completing Iteration 28 (approx. per word bound = -7.464, relative change = 1.432e-04) 
+....................................................................................................
+Completed E-Step (815 seconds). 
+Completed M-Step (1115 seconds). 
+Completing Iteration 29 (approx. per word bound = -7.463, relative change = 1.267e-04) 
+....................................................................................................
+Completed E-Step (824 seconds). 
+Completed M-Step (1137 seconds). 
+Completing Iteration 30 (approx. per word bound = -7.462, relative change = 1.213e-04) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, black, says, go 
+ Topic 3: city, open, residents, social, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: washington, calls, take, phone, comes 
+ Topic 9: health, care, access, crisis, | 
+ Topic 10: job, jobs, opportunity, economic, economy 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, 😂 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: local, need, help, program, business 
+ Topic 21: police, fire, rt, department, leave 
+ Topic 22: plan, policy, rt, debate, plans 
+ Topic 23: two, win, days, go, game 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: face, behind, mask, wear, masks 
+ Topic 27: rt, found, gas, dog, natural 
+ Topic 28: ", said, rt, says, [ 
+ Topic 29: home, important, call, read, safe 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: long, times, many, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, needs 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, everyone, year, friends 
+ Topic 41: many, life, service, leadership, family 
+ Topic 42: working, together, workers, stand, put 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: session, legislative, tomorrow, 4, 6 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, heard, citizens, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: live, check, watch, full, video 
+ Topic 49: rt, coronavirus, dr, elected, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: us, vote, can, make, help 
+ Topic 55: $, 2, tax, 1, budget 
+ Topic 56: country, american, @realdonaldtrump, america, 🇺🇸 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, another, also, s, take 
+....................................................................................................
+Completed E-Step (820 seconds). 
+Completed M-Step (1100 seconds). 
+Completing Iteration 31 (approx. per word bound = -7.461, relative change = 1.168e-04) 
+....................................................................................................
+Completed E-Step (826 seconds). 
+Completed M-Step (1096 seconds). 
+Completing Iteration 32 (approx. per word bound = -7.461, relative change = 1.025e-04) 
+....................................................................................................
+Completed E-Step (825 seconds). 
+Completed M-Step (1082 seconds). 
+Completing Iteration 33 (approx. per word bound = -7.460, relative change = 8.718e-05) 
+....................................................................................................
+Completed E-Step (831 seconds). 
+Completed M-Step (1053 seconds). 
+Completing Iteration 34 (approx. per word bound = -7.459, relative change = 6.761e-05) 
+....................................................................................................
+Completed E-Step (837 seconds). 
+Completed M-Step (1037 seconds). 
+Completing Iteration 35 (approx. per word bound = -7.459, relative change = 5.188e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, black, says, states 
+ Topic 3: city, open, residents, social, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: also, take, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, opportunity, economic, economy 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, 😂 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, local, help, business, program 
+ Topic 21: police, fire, rt, department, leave 
+ Topic 22: plan, policy, rt, debate, plans 
+ Topic 23: go, two, days, win, last 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: face, behind, mask, wear, masks 
+ Topic 27: found, rt, gas, dog, natural 
+ Topic 28: ", said, rt, says, [ 
+ Topic 29: home, important, call, please, keep 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: long, may, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, needs 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, friends 
+ Topic 41: many, life, service, leadership, family 
+ Topic 42: working, together, workers, stand, put 
+ Topic 43: state, rt, rep, governor, senator 
+ Topic 44: session, tomorrow, legislative, join, 4 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, heard, citizens, used 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: live, check, watch, full, s 
+ Topic 49: coronavirus, dr, elected, rt, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: us, can, vote, make, help 
+ Topic 55: $, 2, tax, 1, budget 
+ Topic 56: country, american, @realdonaldtrump, america, 🇺🇸 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, another, also, s, take 
+....................................................................................................
+Completed E-Step (839 seconds). 
+Completed M-Step (1054 seconds). 
+Completing Iteration 36 (approx. per word bound = -7.459, relative change = 4.688e-05) 
+....................................................................................................
+Completed E-Step (837 seconds). 
+Completed M-Step (1033 seconds). 
+Completing Iteration 37 (approx. per word bound = -7.458, relative change = 4.321e-05) 
+....................................................................................................
+Completed E-Step (845 seconds). 
+Completed M-Step (1025 seconds). 
+Completing Iteration 38 (approx. per word bound = -7.458, relative change = 3.663e-05) 
+....................................................................................................
+Completed E-Step (846 seconds). 
+Completed M-Step (1024 seconds). 
+Completing Iteration 39 (approx. per word bound = -7.458, relative change = 3.503e-05) 
+....................................................................................................
+Completed E-Step (852 seconds). 
+Completed M-Step (1015 seconds). 
+Completing Iteration 40 (approx. per word bound = -7.458, relative change = 3.699e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, black, says, states 
+ Topic 3: city, open, residents, social, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, yes, amazing 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, opportunity, economic, economy 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, 😂 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, local, help, business, program 
+ Topic 21: police, fire, department, rt, leave 
+ Topic 22: plan, policy, debate, rt, plans 
+ Topic 23: go, two, days, last, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: face, behind, mask, wear, masks 
+ Topic 27: found, rt, gas, dog, natural 
+ Topic 28: ", said, rt, says, [ 
+ Topic 29: please, home, keep, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, friends 
+ Topic 41: many, life, service, leadership, family 
+ Topic 42: working, together, workers, stand, put 
+ Topic 43: state, rt, rep, governor, senator 
+ Topic 44: join, session, tomorrow, 4, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, heard, citizens, used 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: live, s, check, watch, full 
+ Topic 49: coronavirus, dr, elected, rt, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, vote, make, get 
+ Topic 55: $, 2, tax, 1, budget 
+ Topic 56: country, american, @realdonaldtrump, america, 🇺🇸 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, another, s, gives, last 
+....................................................................................................
+Completed E-Step (857 seconds). 
+Completed M-Step (1011 seconds). 
+Completing Iteration 41 (approx. per word bound = -7.457, relative change = 3.575e-05) 
+....................................................................................................
+Completed E-Step (853 seconds). 
+Completed M-Step (1043 seconds). 
+Completing Iteration 42 (approx. per word bound = -7.457, relative change = 3.143e-05) 
+....................................................................................................
+Completed E-Step (858 seconds). 
+Completed M-Step (1015 seconds). 
+Completing Iteration 43 (approx. per word bound = -7.457, relative change = 2.955e-05) 
+....................................................................................................
+Completed E-Step (862 seconds). 
+Completed M-Step (1030 seconds). 
+Completing Iteration 44 (approx. per word bound = -7.457, relative change = 2.944e-05) 
+....................................................................................................
+Completed E-Step (869 seconds). 
+Completed M-Step (1026 seconds). 
+Completing Iteration 45 (approx. per word bound = -7.456, relative change = 2.795e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, black, says, states 
+ Topic 3: city, open, residents, social, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, yes, amazing 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, opportunity, start, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, 😂 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, local, help, business, program 
+ Topic 21: police, fire, department, due, rt 
+ Topic 22: plan, policy, debate, rt, plans 
+ Topic 23: go, last, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: face, behind, mask, wear, masks 
+ Topic 27: found, gas, rt, dog, natural 
+ Topic 28: ", said, rt, says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, life, service, family, leadership 
+ Topic 42: working, together, workers, stand, put 
+ Topic 43: state, rt, rep, governor, senator 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, heard, used 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, rt, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, vote, make, get 
+ Topic 55: $, 2, tax, 1, budget 
+ Topic 56: country, american, @realdonaldtrump, america, honor 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, another, gives, including, late 
+....................................................................................................
+Completed E-Step (870 seconds). 
+Completed M-Step (1021 seconds). 
+Completing Iteration 46 (approx. per word bound = -7.456, relative change = 2.636e-05) 
+....................................................................................................
+Completed E-Step (869 seconds). 
+Completed M-Step (990 seconds). 
+Completing Iteration 47 (approx. per word bound = -7.456, relative change = 2.644e-05) 
+....................................................................................................
+Completed E-Step (878 seconds). 
+Completed M-Step (1018 seconds). 
+Completing Iteration 48 (approx. per word bound = -7.456, relative change = 2.840e-05) 
+....................................................................................................
+Completed E-Step (881 seconds). 
+Completed M-Step (1013 seconds). 
+Completing Iteration 49 (approx. per word bound = -7.456, relative change = 2.878e-05) 
+....................................................................................................
+Completed E-Step (882 seconds). 
+Completed M-Step (988 seconds). 
+Completing Iteration 50 (approx. per word bound = -7.455, relative change = 2.804e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, black, says, states 
+ Topic 3: city, open, residents, mayor, social 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, yes, amazing 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, 😂 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, fire, due, department, rt 
+ Topic 22: plan, policy, debate, rt, plans 
+ Topic 23: go, last, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: face, behind, mask, wear, masks 
+ Topic 27: found, gas, rt, dog, natural 
+ Topic 28: ", said, rt, says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, life, service, family, leadership 
+ Topic 42: working, together, workers, members, stand 
+ Topic 43: state, rt, rep, governor, senator 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, rt, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, vote, get, make 
+ Topic 55: $, 2, tax, 1, budget 
+ Topic 56: country, american, @realdonaldtrump, honor, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, another, gives, including, late 
+....................................................................................................
+Completed E-Step (889 seconds). 
+Completed M-Step (1010 seconds). 
+Completing Iteration 51 (approx. per word bound = -7.455, relative change = 2.757e-05) 
+....................................................................................................
+Completed E-Step (888 seconds). 
+Completed M-Step (976 seconds). 
+Completing Iteration 52 (approx. per word bound = -7.455, relative change = 2.733e-05) 
+....................................................................................................
+Completed E-Step (886 seconds). 
+Completed M-Step (961 seconds). 
+Completing Iteration 53 (approx. per word bound = -7.455, relative change = 2.741e-05) 
+....................................................................................................
+Completed E-Step (888 seconds). 
+Completed M-Step (953 seconds). 
+Completing Iteration 54 (approx. per word bound = -7.455, relative change = 2.443e-05) 
+....................................................................................................
+Completed E-Step (894 seconds). 
+Completed M-Step (954 seconds). 
+Completing Iteration 55 (approx. per word bound = -7.454, relative change = 2.593e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, black, says, states 
+ Topic 3: city, open, residents, mayor, council 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, yes, amazing 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, fire, due, department, leave 
+ Topic 22: plan, policy, debate, rt, plans 
+ Topic 23: go, last, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: face, behind, mask, wear, masks 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, rt, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farm 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, rt, officials 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, 1, budget 
+ Topic 56: country, american, @realdonaldtrump, honor, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, another, gives, including, late 
+....................................................................................................
+Completed E-Step (893 seconds). 
+Completed M-Step (946 seconds). 
+Completing Iteration 56 (approx. per word bound = -7.454, relative change = 2.816e-05) 
+....................................................................................................
+Completed E-Step (893 seconds). 
+Completed M-Step (954 seconds). 
+Completing Iteration 57 (approx. per word bound = -7.454, relative change = 2.999e-05) 
+....................................................................................................
+Completed E-Step (898 seconds). 
+Completed M-Step (927 seconds). 
+Completing Iteration 58 (approx. per word bound = -7.454, relative change = 3.055e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (943 seconds). 
+Completing Iteration 59 (approx. per word bound = -7.454, relative change = 2.970e-05) 
+....................................................................................................
+Completed E-Step (891 seconds). 
+Completed M-Step (919 seconds). 
+Completing Iteration 60 (approx. per word bound = -7.453, relative change = 2.765e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, black, says, states 
+ Topic 3: city, open, residents, mayor, council 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, fire, due, department, leave 
+ Topic 22: plan, policy, debate, rt, plans 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, rt, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: country, honor, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: rt, voters, republican, party, gop 
+ Topic 60: rt, another, gives, including, late 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (901 seconds). 
+Completing Iteration 61 (approx. per word bound = -7.453, relative change = 2.684e-05) 
+....................................................................................................
+Completed E-Step (893 seconds). 
+Completed M-Step (896 seconds). 
+Completing Iteration 62 (approx. per word bound = -7.453, relative change = 2.692e-05) 
+....................................................................................................
+Completed E-Step (898 seconds). 
+Completed M-Step (938 seconds). 
+Completing Iteration 63 (approx. per word bound = -7.453, relative change = 2.691e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (934 seconds). 
+Completing Iteration 64 (approx. per word bound = -7.453, relative change = 2.572e-05) 
+....................................................................................................
+Completed E-Step (900 seconds). 
+Completed M-Step (931 seconds). 
+Completing Iteration 65 (approx. per word bound = -7.452, relative change = 2.307e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, rt, black, says 
+ Topic 3: city, open, residents, mayor, council 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, fire, due, department, leave 
+ Topic 22: plan, policy, debate, rt, plans 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, rt, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: country, honor, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, rt, republican, party, gop 
+ Topic 60: rt, another, gives, including, showing 
+....................................................................................................
+Completed E-Step (901 seconds). 
+Completed M-Step (926 seconds). 
+Completing Iteration 66 (approx. per word bound = -7.452, relative change = 2.215e-05) 
+....................................................................................................
+Completed E-Step (893 seconds). 
+Completed M-Step (891 seconds). 
+Completing Iteration 67 (approx. per word bound = -7.452, relative change = 2.188e-05) 
+....................................................................................................
+Completed E-Step (896 seconds). 
+Completed M-Step (894 seconds). 
+Completing Iteration 68 (approx. per word bound = -7.452, relative change = 2.215e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (884 seconds). 
+Completing Iteration 69 (approx. per word bound = -7.452, relative change = 2.157e-05) 
+....................................................................................................
+Completed E-Step (896 seconds). 
+Completed M-Step (879 seconds). 
+Completing Iteration 70 (approx. per word bound = -7.452, relative change = 2.288e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: trump, president, rt, black, says 
+ Topic 3: city, open, residents, mayor, council 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, fire, due, department, leave 
+ Topic 22: plan, policy, debate, rt, plans 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, rt, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, co 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: country, honor, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, rt, republican, party, gop 
+ Topic 60: rt, another, gives, including, showing 
+....................................................................................................
+Completed E-Step (892 seconds). 
+Completed M-Step (871 seconds). 
+Completing Iteration 71 (approx. per word bound = -7.451, relative change = 2.371e-05) 
+....................................................................................................
+Completed E-Step (892 seconds). 
+Completed M-Step (865 seconds). 
+Completing Iteration 72 (approx. per word bound = -7.451, relative change = 2.472e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (862 seconds). 
+Completing Iteration 73 (approx. per word bound = -7.451, relative change = 2.280e-05) 
+....................................................................................................
+Completed E-Step (892 seconds). 
+Completed M-Step (822 seconds). 
+Completing Iteration 74 (approx. per word bound = -7.451, relative change = 2.282e-05) 
+....................................................................................................
+Completed E-Step (893 seconds). 
+Completed M-Step (848 seconds). 
+Completing Iteration 75 (approx. per word bound = -7.451, relative change = 2.442e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, fire, due, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, rt, governor, senator 
+ Topic 44: join, session, 4, tomorrow, 3 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: country, honor, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, rt 
+ Topic 60: rt, another, gives, including, showing 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (818 seconds). 
+Completing Iteration 76 (approx. per word bound = -7.450, relative change = 2.528e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (798 seconds). 
+Completing Iteration 77 (approx. per word bound = -7.450, relative change = 2.215e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (814 seconds). 
+Completing Iteration 78 (approx. per word bound = -7.450, relative change = 2.006e-05) 
+....................................................................................................
+Completed E-Step (900 seconds). 
+Completed M-Step (788 seconds). 
+Completing Iteration 79 (approx. per word bound = -7.450, relative change = 1.895e-05) 
+....................................................................................................
+Completed E-Step (918 seconds). 
+Completed M-Step (804 seconds). 
+Completing Iteration 80 (approx. per word bound = -7.450, relative change = 1.784e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, fire, due, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, governor, senator, rt 
+ Topic 44: join, session, 4, tomorrow, 3 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, including, showing 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (810 seconds). 
+Completing Iteration 81 (approx. per word bound = -7.450, relative change = 2.008e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (808 seconds). 
+Completing Iteration 82 (approx. per word bound = -7.450, relative change = 2.176e-05) 
+....................................................................................................
+Completed E-Step (895 seconds). 
+Completed M-Step (810 seconds). 
+Completing Iteration 83 (approx. per word bound = -7.449, relative change = 2.362e-05) 
+....................................................................................................
+Completed E-Step (895 seconds). 
+Completed M-Step (792 seconds). 
+Completing Iteration 84 (approx. per word bound = -7.449, relative change = 2.465e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (810 seconds). 
+Completing Iteration 85 (approx. per word bound = -7.449, relative change = 2.518e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, governor, senator, rt 
+ Topic 44: join, session, 4, tomorrow, 3 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, showing, learned 
+....................................................................................................
+Completed E-Step (899 seconds). 
+Completed M-Step (803 seconds). 
+Completing Iteration 86 (approx. per word bound = -7.449, relative change = 2.343e-05) 
+....................................................................................................
+Completed E-Step (900 seconds). 
+Completed M-Step (783 seconds). 
+Completing Iteration 87 (approx. per word bound = -7.449, relative change = 2.005e-05) 
+....................................................................................................
+Completed E-Step (899 seconds). 
+Completed M-Step (781 seconds). 
+Completing Iteration 88 (approx. per word bound = -7.449, relative change = 1.811e-05) 
+....................................................................................................
+Completed E-Step (898 seconds). 
+Completed M-Step (764 seconds). 
+Completing Iteration 89 (approx. per word bound = -7.448, relative change = 1.662e-05) 
+....................................................................................................
+Completed E-Step (897 seconds). 
+Completed M-Step (777 seconds). 
+Completing Iteration 90 (approx. per word bound = -7.448, relative change = 1.591e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, governor, senator, rt 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, showing, learned 
+....................................................................................................
+Completed E-Step (894 seconds). 
+Completed M-Step (761 seconds). 
+Completing Iteration 91 (approx. per word bound = -7.448, relative change = 1.639e-05) 
+....................................................................................................
+Completed E-Step (895 seconds). 
+Completed M-Step (751 seconds). 
+Completing Iteration 92 (approx. per word bound = -7.448, relative change = 1.759e-05) 
+....................................................................................................
+Completed E-Step (892 seconds). 
+Completed M-Step (745 seconds). 
+Completing Iteration 93 (approx. per word bound = -7.448, relative change = 1.837e-05) 
+....................................................................................................
+Completed E-Step (892 seconds). 
+Completed M-Step (748 seconds). 
+Completing Iteration 94 (approx. per word bound = -7.448, relative change = 1.778e-05) 
+....................................................................................................
+Completed E-Step (892 seconds). 
+Completed M-Step (747 seconds). 
+Completing Iteration 95 (approx. per word bound = -7.448, relative change = 1.603e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, showing, placing 
+....................................................................................................
+Completed E-Step (889 seconds). 
+Completed M-Step (747 seconds). 
+Completing Iteration 96 (approx. per word bound = -7.448, relative change = 1.506e-05) 
+....................................................................................................
+Completed E-Step (888 seconds). 
+Completed M-Step (751 seconds). 
+Completing Iteration 97 (approx. per word bound = -7.447, relative change = 1.434e-05) 
+....................................................................................................
+Completed E-Step (885 seconds). 
+Completed M-Step (752 seconds). 
+Completing Iteration 98 (approx. per word bound = -7.447, relative change = 1.403e-05) 
+....................................................................................................
+Completed E-Step (883 seconds). 
+Completed M-Step (751 seconds). 
+Completing Iteration 99 (approx. per word bound = -7.447, relative change = 1.385e-05) 
+....................................................................................................
+Completed E-Step (882 seconds). 
+Completed M-Step (749 seconds). 
+Completing Iteration 100 (approx. per word bound = -7.447, relative change = 1.394e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, west, piece 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, year, love, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, +, since, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, showing, placing 
+....................................................................................................
+Completed E-Step (881 seconds). 
+Completed M-Step (750 seconds). 
+Completing Iteration 101 (approx. per word bound = -7.447, relative change = 1.444e-05) 
+....................................................................................................
+Completed E-Step (885 seconds). 
+Completed M-Step (772 seconds). 
+Completing Iteration 102 (approx. per word bound = -7.447, relative change = 1.532e-05) 
+....................................................................................................
+Completed E-Step (881 seconds). 
+Completed M-Step (771 seconds). 
+Completing Iteration 103 (approx. per word bound = -7.447, relative change = 1.632e-05) 
+....................................................................................................
+Completed E-Step (881 seconds). 
+Completed M-Step (770 seconds). 
+Completing Iteration 104 (approx. per word bound = -7.447, relative change = 1.614e-05) 
+....................................................................................................
+Completed E-Step (881 seconds). 
+Completed M-Step (752 seconds). 
+Completing Iteration 105 (approx. per word bound = -7.447, relative change = 1.476e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, workers, stand 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, rt 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, since, +, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, showing, placing 
+....................................................................................................
+Completed E-Step (881 seconds). 
+Completed M-Step (751 seconds). 
+Completing Iteration 106 (approx. per word bound = -7.446, relative change = 1.335e-05) 
+....................................................................................................
+Completed E-Step (883 seconds). 
+Completed M-Step (756 seconds). 
+Completing Iteration 107 (approx. per word bound = -7.446, relative change = 1.249e-05) 
+....................................................................................................
+Completed E-Step (874 seconds). 
+Completed M-Step (778 seconds). 
+Completing Iteration 108 (approx. per word bound = -7.446, relative change = 1.301e-05) 
+....................................................................................................
+Completed E-Step (875 seconds). 
+Completed M-Step (771 seconds). 
+Completing Iteration 109 (approx. per word bound = -7.446, relative change = 1.386e-05) 
+....................................................................................................
+Completed E-Step (879 seconds). 
+Completed M-Step (772 seconds). 
+Completing Iteration 110 (approx. per word bound = -7.446, relative change = 1.413e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, together, members, families, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, since, +, top 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, showing, placing 
+....................................................................................................
+Completed E-Step (865 seconds). 
+Completed M-Step (768 seconds). 
+Completing Iteration 111 (approx. per word bound = -7.446, relative change = 1.418e-05) 
+....................................................................................................
+Completed E-Step (867 seconds). 
+Completed M-Step (764 seconds). 
+Completing Iteration 112 (approx. per word bound = -7.446, relative change = 1.351e-05) 
+....................................................................................................
+Completed E-Step (863 seconds). 
+Completed M-Step (775 seconds). 
+Completing Iteration 113 (approx. per word bound = -7.446, relative change = 1.302e-05) 
+....................................................................................................
+Completed E-Step (870 seconds). 
+Completed M-Step (750 seconds). 
+Completing Iteration 114 (approx. per word bound = -7.446, relative change = 1.301e-05) 
+....................................................................................................
+Completed E-Step (866 seconds). 
+Completed M-Step (769 seconds). 
+Completing Iteration 115 (approx. per word bound = -7.446, relative change = 1.282e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, since, +, 3 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, gives, placing, showing 
+....................................................................................................
+Completed E-Step (868 seconds). 
+Completed M-Step (770 seconds). 
+Completing Iteration 116 (approx. per word bound = -7.445, relative change = 1.316e-05) 
+....................................................................................................
+Completed E-Step (869 seconds). 
+Completed M-Step (768 seconds). 
+Completing Iteration 117 (approx. per word bound = -7.445, relative change = 1.322e-05) 
+....................................................................................................
+Completed E-Step (868 seconds). 
+Completed M-Step (765 seconds). 
+Completing Iteration 118 (approx. per word bound = -7.445, relative change = 1.334e-05) 
+....................................................................................................
+Completed E-Step (861 seconds). 
+Completed M-Step (770 seconds). 
+Completing Iteration 119 (approx. per word bound = -7.445, relative change = 1.334e-05) 
+....................................................................................................
+Completed E-Step (859 seconds). 
+Completed M-Step (768 seconds). 
+Completing Iteration 120 (approx. per word bound = -7.445, relative change = 1.291e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, since, +, 3 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, gives, showing 
+....................................................................................................
+Completed E-Step (858 seconds). 
+Completed M-Step (769 seconds). 
+Completing Iteration 121 (approx. per word bound = -7.445, relative change = 1.227e-05) 
+....................................................................................................
+Completed E-Step (859 seconds). 
+Completed M-Step (769 seconds). 
+Completing Iteration 122 (approx. per word bound = -7.445, relative change = 1.185e-05) 
+....................................................................................................
+Completed E-Step (857 seconds). 
+Completed M-Step (765 seconds). 
+Completing Iteration 123 (approx. per word bound = -7.445, relative change = 1.191e-05) 
+....................................................................................................
+Completed E-Step (857 seconds). 
+Completed M-Step (748 seconds). 
+Completing Iteration 124 (approx. per word bound = -7.445, relative change = 1.294e-05) 
+....................................................................................................
+Completed E-Step (863 seconds). 
+Completed M-Step (766 seconds). 
+Completing Iteration 125 (approx. per word bound = -7.445, relative change = 1.516e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, progress 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, friends 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, since, +, 3 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (861 seconds). 
+Completed M-Step (746 seconds). 
+Completing Iteration 126 (approx. per word bound = -7.444, relative change = 1.751e-05) 
+....................................................................................................
+Completed E-Step (862 seconds). 
+Completed M-Step (747 seconds). 
+Completing Iteration 127 (approx. per word bound = -7.444, relative change = 1.827e-05) 
+....................................................................................................
+Completed E-Step (863 seconds). 
+Completed M-Step (749 seconds). 
+Completing Iteration 128 (approx. per word bound = -7.444, relative change = 1.773e-05) 
+....................................................................................................
+Completed E-Step (861 seconds). 
+Completed M-Step (775 seconds). 
+Completing Iteration 129 (approx. per word bound = -7.444, relative change = 1.592e-05) 
+....................................................................................................
+Completed E-Step (859 seconds). 
+Completed M-Step (749 seconds). 
+Completing Iteration 130 (approx. per word bound = -7.444, relative change = 1.493e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (858 seconds). 
+Completed M-Step (746 seconds). 
+Completing Iteration 131 (approx. per word bound = -7.444, relative change = 1.480e-05) 
+....................................................................................................
+Completed E-Step (860 seconds). 
+Completed M-Step (743 seconds). 
+Completing Iteration 132 (approx. per word bound = -7.444, relative change = 1.453e-05) 
+....................................................................................................
+Completed E-Step (858 seconds). 
+Completed M-Step (743 seconds). 
+Completing Iteration 133 (approx. per word bound = -7.444, relative change = 1.459e-05) 
+....................................................................................................
+Completed E-Step (861 seconds). 
+Completed M-Step (716 seconds). 
+Completing Iteration 134 (approx. per word bound = -7.444, relative change = 1.430e-05) 
+....................................................................................................
+Completed E-Step (860 seconds). 
+Completed M-Step (722 seconds). 
+Completing Iteration 135 (approx. per word bound = -7.443, relative change = 1.552e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, 4, tomorrow, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (863 seconds). 
+Completed M-Step (736 seconds). 
+Completing Iteration 136 (approx. per word bound = -7.443, relative change = 1.602e-05) 
+....................................................................................................
+Completed E-Step (862 seconds). 
+Completed M-Step (737 seconds). 
+Completing Iteration 137 (approx. per word bound = -7.443, relative change = 1.608e-05) 
+....................................................................................................
+Completed E-Step (860 seconds). 
+Completed M-Step (721 seconds). 
+Completing Iteration 138 (approx. per word bound = -7.443, relative change = 1.608e-05) 
+....................................................................................................
+Completed E-Step (882 seconds). 
+Completed M-Step (731 seconds). 
+Completing Iteration 139 (approx. per word bound = -7.443, relative change = 1.546e-05) 
+....................................................................................................
+Completed E-Step (854 seconds). 
+Completed M-Step (726 seconds). 
+Completing Iteration 140 (approx. per word bound = -7.443, relative change = 1.319e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, 16 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, delegate 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, tomorrow, 4, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (857 seconds). 
+Completed M-Step (728 seconds). 
+Completing Iteration 141 (approx. per word bound = -7.443, relative change = 1.353e-05) 
+....................................................................................................
+Completed E-Step (855 seconds). 
+Completed M-Step (728 seconds). 
+Completing Iteration 142 (approx. per word bound = -7.443, relative change = 1.277e-05) 
+....................................................................................................
+Completed E-Step (879 seconds). 
+Completed M-Step (749 seconds). 
+Completing Iteration 143 (approx. per word bound = -7.443, relative change = 1.214e-05) 
+....................................................................................................
+Completed E-Step (854 seconds). 
+Completed M-Step (741 seconds). 
+Completing Iteration 144 (approx. per word bound = -7.442, relative change = 1.159e-05) 
+....................................................................................................
+Completed E-Step (855 seconds). 
+Completed M-Step (723 seconds). 
+Completing Iteration 145 (approx. per word bound = -7.442, relative change = 1.138e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, tomorrow, 4, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (854 seconds). 
+Completed M-Step (741 seconds). 
+Completing Iteration 146 (approx. per word bound = -7.442, relative change = 1.165e-05) 
+....................................................................................................
+Completed E-Step (847 seconds). 
+Completed M-Step (724 seconds). 
+Completing Iteration 147 (approx. per word bound = -7.442, relative change = 1.211e-05) 
+....................................................................................................
+Completed E-Step (844 seconds). 
+Completed M-Step (721 seconds). 
+Completing Iteration 148 (approx. per word bound = -7.442, relative change = 1.265e-05) 
+....................................................................................................
+Completed E-Step (843 seconds). 
+Completed M-Step (740 seconds). 
+Completing Iteration 149 (approx. per word bound = -7.442, relative change = 1.300e-05) 
+....................................................................................................
+Completed E-Step (841 seconds). 
+Completed M-Step (737 seconds). 
+Completing Iteration 150 (approx. per word bound = -7.442, relative change = 1.322e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, tomorrow, legislative, 4 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (844 seconds). 
+Completed M-Step (733 seconds). 
+Completing Iteration 151 (approx. per word bound = -7.442, relative change = 1.335e-05) 
+....................................................................................................
+Completed E-Step (842 seconds). 
+Completed M-Step (731 seconds). 
+Completing Iteration 152 (approx. per word bound = -7.442, relative change = 1.339e-05) 
+....................................................................................................
+Completed E-Step (841 seconds). 
+Completed M-Step (730 seconds). 
+Completing Iteration 153 (approx. per word bound = -7.442, relative change = 1.338e-05) 
+....................................................................................................
+Completed E-Step (842 seconds). 
+Completed M-Step (731 seconds). 
+Completing Iteration 154 (approx. per word bound = -7.442, relative change = 1.332e-05) 
+....................................................................................................
+Completed E-Step (835 seconds). 
+Completed M-Step (714 seconds). 
+Completing Iteration 155 (approx. per word bound = -7.441, relative change = 1.327e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, ], says, [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, tomorrow, legislative, 4 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (839 seconds). 
+Completed M-Step (714 seconds). 
+Completing Iteration 156 (approx. per word bound = -7.441, relative change = 1.326e-05) 
+....................................................................................................
+Completed E-Step (835 seconds). 
+Completed M-Step (734 seconds). 
+Completing Iteration 157 (approx. per word bound = -7.441, relative change = 1.352e-05) 
+....................................................................................................
+Completed E-Step (832 seconds). 
+Completed M-Step (731 seconds). 
+Completing Iteration 158 (approx. per word bound = -7.441, relative change = 1.375e-05) 
+....................................................................................................
+Completed E-Step (835 seconds). 
+Completed M-Step (725 seconds). 
+Completing Iteration 159 (approx. per word bound = -7.441, relative change = 1.409e-05) 
+....................................................................................................
+Completed E-Step (835 seconds). 
+Completed M-Step (723 seconds). 
+Completing Iteration 160 (approx. per word bound = -7.441, relative change = 1.459e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, tomorrow, legislative, 4 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, 2, tax, budget, 1 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (833 seconds). 
+Completed M-Step (720 seconds). 
+Completing Iteration 161 (approx. per word bound = -7.441, relative change = 1.487e-05) 
+....................................................................................................
+Completed E-Step (834 seconds). 
+Completed M-Step (701 seconds). 
+Completing Iteration 162 (approx. per word bound = -7.441, relative change = 1.508e-05) 
+....................................................................................................
+Completed E-Step (833 seconds). 
+Completed M-Step (699 seconds). 
+Completing Iteration 163 (approx. per word bound = -7.441, relative change = 1.538e-05) 
+....................................................................................................
+Completed E-Step (835 seconds). 
+Completed M-Step (696 seconds). 
+Completing Iteration 164 (approx. per word bound = -7.440, relative change = 1.575e-05) 
+....................................................................................................
+Completed E-Step (836 seconds). 
+Completed M-Step (712 seconds). 
+Completing Iteration 165 (approx. per word bound = -7.440, relative change = 1.680e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, tomorrow, legislative, 1 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, 2, budget, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (843 seconds). 
+Completed M-Step (712 seconds). 
+Completing Iteration 166 (approx. per word bound = -7.440, relative change = 1.747e-05) 
+....................................................................................................
+Completed E-Step (842 seconds). 
+Completed M-Step (711 seconds). 
+Completing Iteration 167 (approx. per word bound = -7.440, relative change = 1.725e-05) 
+....................................................................................................
+Completed E-Step (843 seconds). 
+Completed M-Step (713 seconds). 
+Completing Iteration 168 (approx. per word bound = -7.440, relative change = 1.658e-05) 
+....................................................................................................
+Completed E-Step (842 seconds). 
+Completed M-Step (709 seconds). 
+Completing Iteration 169 (approx. per word bound = -7.440, relative change = 1.562e-05) 
+....................................................................................................
+Completed E-Step (842 seconds). 
+Completed M-Step (695 seconds). 
+Completing Iteration 170 (approx. per word bound = -7.440, relative change = 1.579e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, session, tomorrow, 1, legislative 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, budget, 2, funding 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (836 seconds). 
+Completed M-Step (694 seconds). 
+Completing Iteration 171 (approx. per word bound = -7.440, relative change = 1.658e-05) 
+....................................................................................................
+Completed E-Step (838 seconds). 
+Completed M-Step (693 seconds). 
+Completing Iteration 172 (approx. per word bound = -7.439, relative change = 1.743e-05) 
+....................................................................................................
+Completed E-Step (845 seconds). 
+Completed M-Step (697 seconds). 
+Completing Iteration 173 (approx. per word bound = -7.439, relative change = 1.767e-05) 
+....................................................................................................
+Completed E-Step (846 seconds). 
+Completed M-Step (712 seconds). 
+Completing Iteration 174 (approx. per word bound = -7.439, relative change = 1.787e-05) 
+....................................................................................................
+Completed E-Step (843 seconds). 
+Completed M-Step (711 seconds). 
+Completing Iteration 175 (approx. per word bound = -7.439, relative change = 1.776e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, 2, session, 1, tomorrow 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, budget, funding, million 
+ Topic 56: honor, country, american, @realdonaldtrump, america 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, gives 
+....................................................................................................
+Completed E-Step (844 seconds). 
+Completed M-Step (714 seconds). 
+Completing Iteration 176 (approx. per word bound = -7.439, relative change = 1.679e-05) 
+....................................................................................................
+Completed E-Step (844 seconds). 
+Completed M-Step (717 seconds). 
+Completing Iteration 177 (approx. per word bound = -7.439, relative change = 1.592e-05) 
+....................................................................................................
+Completed E-Step (844 seconds). 
+Completed M-Step (704 seconds). 
+Completing Iteration 178 (approx. per word bound = -7.439, relative change = 1.541e-05) 
+....................................................................................................
+Completed E-Step (840 seconds). 
+Completed M-Step (717 seconds). 
+Completing Iteration 179 (approx. per word bound = -7.439, relative change = 1.548e-05) 
+....................................................................................................
+Completed E-Step (843 seconds). 
+Completed M-Step (713 seconds). 
+Completing Iteration 180 (approx. per word bound = -7.438, relative change = 1.514e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, available, clear, message, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, 2, 1, session, tomorrow 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, women, fight 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, budget, funding, million 
+ Topic 56: honor, country, american, @realdonaldtrump, us 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, brings 
+....................................................................................................
+Completed E-Step (845 seconds). 
+Completed M-Step (700 seconds). 
+Completing Iteration 181 (approx. per word bound = -7.438, relative change = 1.470e-05) 
+....................................................................................................
+Completed E-Step (845 seconds). 
+Completed M-Step (699 seconds). 
+Completing Iteration 182 (approx. per word bound = -7.438, relative change = 1.435e-05) 
+....................................................................................................
+Completed E-Step (843 seconds). 
+Completed M-Step (713 seconds). 
+Completing Iteration 183 (approx. per word bound = -7.438, relative change = 1.304e-05) 
+....................................................................................................
+Completed E-Step (837 seconds). 
+Completed M-Step (703 seconds). 
+Completing Iteration 184 (approx. per word bound = -7.438, relative change = 1.222e-05) 
+....................................................................................................
+Completed E-Step (837 seconds). 
+Completed M-Step (727 seconds). 
+Completing Iteration 185 (approx. per word bound = -7.438, relative change = 1.178e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, clear, message, available, send 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: voted, rt, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, makes, nothing 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: join, 2, 1, session, tomorrow 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, fight, women 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, budget, funding, million 
+ Topic 56: honor, country, american, @realdonaldtrump, us 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, brings 
+....................................................................................................
+Completed E-Step (831 seconds). 
+Completed M-Step (726 seconds). 
+Completing Iteration 186 (approx. per word bound = -7.438, relative change = 1.130e-05) 
+....................................................................................................
+Completed E-Step (831 seconds). 
+Completed M-Step (721 seconds). 
+Completing Iteration 187 (approx. per word bound = -7.438, relative change = 1.138e-05) 
+....................................................................................................
+Completed E-Step (833 seconds). 
+Completed M-Step (704 seconds). 
+Completing Iteration 188 (approx. per word bound = -7.438, relative change = 1.145e-05) 
+....................................................................................................
+Completed E-Step (835 seconds). 
+Completed M-Step (718 seconds). 
+Completing Iteration 189 (approx. per word bound = -7.438, relative change = 1.156e-05) 
+....................................................................................................
+Completed E-Step (828 seconds). 
+Completed M-Step (717 seconds). 
+Completing Iteration 190 (approx. per word bound = -7.438, relative change = 1.239e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, clear, message, send, received 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, man, got, makes 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: 2, join, 1, session, tomorrow 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, fight, continue 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, budget, funding, million 
+ Topic 56: honor, country, american, @realdonaldtrump, us 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, brings 
+....................................................................................................
+Completed E-Step (825 seconds). 
+Completed M-Step (720 seconds). 
+Completing Iteration 191 (approx. per word bound = -7.437, relative change = 1.354e-05) 
+....................................................................................................
+Completed E-Step (824 seconds). 
+Completed M-Step (717 seconds). 
+Completing Iteration 192 (approx. per word bound = -7.437, relative change = 1.267e-05) 
+....................................................................................................
+Completed E-Step (823 seconds). 
+Completed M-Step (719 seconds). 
+Completing Iteration 193 (approx. per word bound = -7.437, relative change = 1.181e-05) 
+....................................................................................................
+Completed E-Step (823 seconds). 
+Completed M-Step (719 seconds). 
+Completing Iteration 194 (approx. per word bound = -7.437, relative change = 1.161e-05) 
+....................................................................................................
+Completed E-Step (826 seconds). 
+Completed M-Step (701 seconds). 
+Completing Iteration 195 (approx. per word bound = -7.437, relative change = 1.200e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, clear, message, send, received 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, got, man, makes 
+ Topic 15: rt, arizona, az, ⬇, @azhousedems 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: 2, join, 1, session, tomorrow 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, 3, since, + 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, fight, continue 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, budget, funding, million 
+ Topic 56: honor, country, american, @realdonaldtrump, us 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, brings 
+....................................................................................................
+Completed E-Step (828 seconds). 
+Completed M-Step (715 seconds). 
+Completing Iteration 196 (approx. per word bound = -7.437, relative change = 1.273e-05) 
+....................................................................................................
+Completed E-Step (827 seconds). 
+Completed M-Step (712 seconds). 
+Completing Iteration 197 (approx. per word bound = -7.437, relative change = 1.246e-05) 
+....................................................................................................
+Completed E-Step (824 seconds). 
+Completed M-Step (697 seconds). 
+Completing Iteration 198 (approx. per word bound = -7.437, relative change = 1.217e-05) 
+....................................................................................................
+Completed E-Step (827 seconds). 
+Completed M-Step (714 seconds). 
+Completing Iteration 199 (approx. per word bound = -7.437, relative change = 1.130e-05) 
+....................................................................................................
+Completed E-Step (824 seconds). 
+Completed M-Step (696 seconds). 
+Completing Iteration 200 (approx. per word bound = -7.437, relative change = 1.045e-05) 
+Topic 1: today, day, first, every, made 
+ Topic 2: rt, trump, president, black, says 
+ Topic 3: city, open, residents, including, mayor 
+ Topic 4: now, clear, message, send, received 
+ Topic 5: food, real, summer, build, works 
+ Topic 6: rt, power, virginia, piece, book 
+ Topic 7: !, thank, thanks, amazing, yes 
+ Topic 8: take, also, washington, calls, phone 
+ Topic 9: health, care, access, crisis, services 
+ Topic 10: job, jobs, start, opportunity, economic 
+ Topic 11: rt, voted, #gapol, georgia, arkansas 
+ Topic 12: …, giving, experience, key, cause 
+ Topic 13: rt, california, ohio, ca, 👏 
+ Topic 14: like, *, got, man, makes 
+ Topic 15: rt, arizona, az, @azhousedems, ⬇ 
+ Topic 16: house, bill, senate, committee, passed 
+ Topic 17: rt, #mnleg, minnesota, mn, ct 
+ Topic 18: rt, hate, wisconsin, crime, sc 
+ Topic 19: new, covid-19, cases, report, testing 
+ Topic 20: need, help, local, business, program 
+ Topic 21: police, due, fire, department, leave 
+ Topic 22: plan, policy, debate, plans, ahead 
+ Topic 23: last, go, two, days, win 
+ Topic 24: rt, florida, months, 18, shot 
+ Topic 25: de, la, son, el, o 
+ Topic 26: social, face, behind, mask, wear 
+ Topic 27: found, gas, dog, natural, oil 
+ Topic 28: ", said, says, ], [ 
+ Topic 29: please, keep, home, important, call 
+ Topic 30: rt, order, pa, moving, executive 
+ Topic 31: rt, maryland, lgbtq, md, baltimore 
+ Topic 32: issues, rural, industry, discussing, farmers 
+ Topic 33: rt, week, via, campaign, show 
+ Topic 34: world, place, around, means, human 
+ Topic 35: great, community, w, morning, meeting 
+ Topic 36: may, long, times, able, past 
+ Topic 37: ?, people, just, one, know 
+ Topic 38: law, must, stop, change, protect 
+ Topic 39: time, good, see, back, way 
+ Topic 40: happy, love, year, everyone, hope 
+ Topic 41: many, family, life, service, leadership 
+ Topic 42: working, families, together, members, workers 
+ Topic 43: state, rep, governor, senator, sen 
+ Topic 44: 2, join, 1, session, tomorrow 
+ Topic 45: school, public, students, education, schools 
+ Topic 46: political, politics, citizens, used, calling 
+ Topic 47: rt, #mapoli, #coleg, #copolitics, colorado 
+ Topic 48: s, live, check, watch, full 
+ Topic 49: coronavirus, dr, elected, officials, official 
+ Topic 50: county, #txlege, texas, center, park 
+ Topic 51: %, years, since, +, 3 
+ Topic 52: district, best, well, congratulations, team 
+ Topic 53: work, support, proud, fight, continue 
+ Topic 54: can, us, get, vote, make 
+ Topic 55: $, tax, budget, funding, million 
+ Topic 56: honor, country, american, @realdonaldtrump, women 
+ Topic 57: justice, safety, action, gun, issue 
+ Topic 58: use, water, energy, #utpol, force 
+ Topic 59: voters, republican, party, gop, democrats 
+ Topic 60: rt, another, placing, showing, brings 
+....................................................................................................
+Completed E-Step (825 seconds). 
+Completed M-Step (696 seconds). 
+Model Converged 
+      user     system    elapsed 
+346923.473    386.375 347327.915 
+> 
+> saveRDS(stm_sm_twts,file="stm_twts60_statecov.RDS") #8M
+> 
+> 
+> proc.time()
+      user     system    elapsed 
+346996.668    388.219 347411.453 
