@@ -1,10 +1,14 @@
 # Legislator_Topic_Models
-Nitheesha Nakka1, Omer Yalcin2, Bruce Desmarais3, Sarah Rajtmajer4, Burt Monroe5
+Authors Nitheesha Nakka1, Omer Yalcin2, Bruce Desmarais3, Sarah Rajtmajer4, Burt Monroe5
 
 /1 Department of Political Science, Pennsylvania State University, Pond Laboratory, University Park, PA 16802.
-/2 Data Analytics and Computational Social Science, University of Massachusetts Amherst, Amherst, MA 01003. 
+
+/2 Data Analytics and Computational Social Science, University of Massachusetts Amherst, Amherst, MA 01003.
+
 /3 Department of Political Science, Pennsylvania State University, Pond Laboratory, University Park, PA 16802. 
+
 /4 College of Information Sciences and Technology, Pennsylvania State University, Westgate Building University Park, PA 16802. 
+
 /5 Department of Political Science, Pennsylvania State University, University Park, PA 16802.
 
 Abstract:
